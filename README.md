@@ -7,6 +7,7 @@
 ### **Physics-Verified, Quantum-Safe Thermo-Carbon Virtual Power Plant (VPP) & Triple-Silo Grid Resilience Ledger**
 
 [![Live Production Demo](https://img.shields.io/badge/🌐_Live_Interactive_Platform-gridvane--climatechain.vercel.app-059669?style=for-the-badge)](https://gridvane-climatechain.vercel.app/)
+[![YouTube Demo Video](https://img.shields.io/badge/🎬_Watch_Demo_Video-YouTube_(1080p)-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/Qme_qvmrVHQ)
 [![IEEE ClimateChain 2026](https://img.shields.io/badge/IEEE_ClimateChain_2026-Track_2_%2B_Cross--Tracks_1%2C_4%2C_3-00629B?style=for-the-badge)](https://ieee-climatechain-hack.devpost.com/)
 [![IEEE Std C57.91 & 738](https://img.shields.io/badge/IEEE_Std_C57.91_%26_738-Transformer_%26_DLR_Physics-D97706?style=for-the-badge)](./src/lib/physics/transformerThermal.ts)
 [![NIST FIPS 204](https://img.shields.io/badge/NIST_FIPS_204-ML--DSA--65_%2B_PP--PQB-6D28D9?style=for-the-badge)](./src/lib/crypto/pqcEngine.ts)
@@ -24,6 +25,7 @@
 | Category | What This Link / Document Is For | Direct Link |
 | :--- | :--- | :--- |
 | 🌐 **Live Deployed Platform** | **Interactive Production Web Application** (33-Bus AC Digital Twin, 5-Agent VPP & PQC Inspector) | [**`https://gridvane-climatechain.vercel.app/`**](https://gridvane-climatechain.vercel.app/) |
+| 🎬 **Official Demo Video** | **End-to-End Full HD (1080p) Problem, Solution & Live Platform Walkthrough** (YouTube) | [**`https://youtu.be/Qme_qvmrVHQ`**](https://youtu.be/Qme_qvmrVHQ) |
 | 💻 **GitHub Repository** | **Official Source Code, Solidity Smart Contracts & CLI Benchmark Suite** | [**`https://github.com/TusharTechs/gridvane`**](https://github.com/TusharTechs/gridvane) |
 | 📄 **Deliverable 1 (2-Page Brief)** | **2-Page Problem & Solution Executive Overview** (Markdown & PDF) | [`docs/1_Problem_and_Solution_Overview_2Page.md`](./docs/1_Problem_and_Solution_Overview_2Page.md) · [`PDF`](./docs/GridVane_IEEE_ClimateChain_2026_Executive_Brief.pdf) |
 | 🏗️ **Deliverable 2 (Architecture)** | **System Architecture & Technical Specification** (AC DistFlow, LME, C57.91, P3271.01) | [`docs/2_Architecture_and_Technical_Specification.md`](./docs/2_Architecture_and_Technical_Specification.md) |
