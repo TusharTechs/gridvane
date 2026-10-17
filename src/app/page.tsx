@@ -303,9 +303,9 @@ export default function GridVaneCockpitPage() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-800/80">
             <div className="flex items-start sm:items-center gap-4">
               <img
-                src="/gridvane-logo.jpg"
+                src="/gridvane-logo.png"
                 alt="GridVane Official Emblem"
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-[#00629B]/50 shadow-md shrink-0"
+                className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-[0_4px_12px_rgba(0,98,155,0.28)] shrink-0"
               />
               <div>
                 <div className="flex flex-wrap items-center gap-2">

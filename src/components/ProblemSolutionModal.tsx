@@ -131,7 +131,7 @@ export function ProblemSolutionModal({
       title: "How GridVane Solves the Climate-Grid Paradox End-to-End",
       subtitle:
         "GridVane is the first platform to couple real-time AC distribution physics, transformer thermodynamics, post-quantum lattice cryptography, and atomic multi-registry DLT settlement:",
-      image: "/gridvane-logo.jpg",
+      image: "/gridvane-logo.png",
       metrics: [
         {
           label: "1. Coupled AC Physics & LME Carbon",

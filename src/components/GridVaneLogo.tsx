@@ -233,11 +233,11 @@ export function GridVaneLogo({
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 {/* High-Resolution Master Brand Mark */}
                 <div className="md:col-span-5 flex flex-col items-center">
-                  <div className="relative rounded-3xl overflow-hidden border-2 border-[#00629B]/50 shadow-xl bg-[#040814]">
+                  <div className="relative p-3 flex items-center justify-center">
                     <img
-                      src="/gridvane-logo.jpg"
+                      src="/gridvane-logo.png"
                       alt="GridVane Official Emblem"
-                      className="w-56 h-56 sm:w-64 sm:h-64 object-cover"
+                      className="w-56 h-56 sm:w-64 sm:h-64 object-contain drop-shadow-[0_10px_28px_rgba(0,98,155,0.35)]"
                     />
                   </div>
                   <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-slate-400">

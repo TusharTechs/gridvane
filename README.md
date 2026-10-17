@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./public/gridvane-logo.png" alt="GridVane Official Emblem" width="150" height="150" style="border-radius: 28px;" />
+<img src="./public/gridvane-logo.png" alt="GridVane Official Emblem" width="160" height="160" />
 
 # ⚡ GridVane
 
@@ -147,8 +147,7 @@ gridvane/
 │   └── GridVane_IEEE_ClimateChain_2026_Executive_Brief.pdf
 ├── public/
 │   ├── demo-assets/                         # Scientific visual crisis illustrations (Heatwave, Clinic, Security)
-│   ├── gridvane-logo.jpg                    # High-resolution GridVane official brand emblem
-│   └── gridvane-logo.png
+│   └── gridvane-logo.png                    # High-resolution transparent GridVane official brand emblem
 ├── scripts/
 │   ├── compile-and-test-contracts.ts        # Automated solc 0.8.28 EVM compiler & ABI/bytecode verifier
 │   └── gridbench.ts                         # Standalone CLI 720-hour multi-feeder benchmark & PQC test runner
