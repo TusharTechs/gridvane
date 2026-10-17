@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Sparkles, ShieldCheck, Wind, Flame, Cpu } from "lucide-react";
 
 interface GridVaneLogoProps {
@@ -144,6 +145,20 @@ export function GridVaneLogo({
   isLightMode = true,
 }: GridVaneLogoProps) {
   const [showModal, setShowModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!showModal) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setShowModal(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showModal]);
 
   const dims =
     size === "sm"
@@ -196,107 +211,110 @@ export function GridVaneLogo({
         </div>
       </div>
 
-      {/* Interactive Brand Emblem & Symbolism Modal */}
-      {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4"
-          onClick={() => setShowModal(false)}
-        >
+      {/* Render Modal via Portal to document.body so header backdrop-blur never clips it */}
+      {mounted &&
+        showModal &&
+        createPortal(
           <div
-            className="relative max-w-3xl w-full rounded-3xl gv-glass-card p-6 md:p-8 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[9999] overflow-y-auto bg-slate-900/65 backdrop-blur-md flex min-h-full items-center justify-center p-4 sm:p-6"
+            onClick={() => setShowModal(false)}
           >
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-900/90 text-slate-400 hover:text-white border border-slate-800 transition"
+            <div
+              className="relative max-w-3xl w-full rounded-3xl gv-glass-card p-6 md:p-8 shadow-2xl my-8"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-4 h-4" />
-            </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-slate-900 text-slate-300 hover:text-white border border-slate-700 text-xs font-mono font-bold flex items-center gap-1.5 transition"
+              >
+                <X className="w-3.5 h-3.5" /> Close
+              </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* High-Resolution Master Brand Mark */}
-              <div className="md:col-span-5 flex flex-col items-center">
-                <div className="relative rounded-3xl overflow-hidden border-2 border-[#00629B]/50 shadow-xl bg-[#040814]">
-                  <img
-                    src="/gridvane-logo.jpg"
-                    alt="GridVane Official Emblem"
-                    className="w-64 h-64 object-cover"
-                  />
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Official GridVane Master Identity Mark</span>
-                </div>
-              </div>
-
-              {/* Architectural Symbolism Breakdown */}
-              <div className="md:col-span-7 space-y-4">
-                <div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                    IEEE ClimateChain 2026 Brand Identity
-                  </span>
-                  <h3 className="text-2xl font-extrabold text-white mt-2 tracking-tight">
-                    The GridVane Emblem Architecture
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Every geometric element in the GridVane emblem encodes one of the four cyber-physical pillars of our IEEE ClimateChain 2026 architecture:
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                {/* High-Resolution Master Brand Mark */}
+                <div className="md:col-span-5 flex flex-col items-center">
+                  <div className="relative rounded-3xl overflow-hidden border-2 border-[#00629B]/50 shadow-xl bg-[#040814]">
+                    <img
+                      src="/gridvane-logo.jpg"
+                      alt="GridVane Official Emblem"
+                      className="w-56 h-56 sm:w-64 sm:h-64 object-cover"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-slate-400">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Official GridVane Master Identity Mark</span>
+                  </div>
                 </div>
 
-                <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        1. Outer Hexagonal Truss — NIST FIPS 204 Lattice Shield
-                      </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Represents the Module-Lattice (ML-DSA-65) post-quantum cryptographic perimeter protecting 20-year grid infrastructure against quantum key forgery.
-                      </p>
-                    </div>
+                {/* Architectural Symbolism Breakdown */}
+                <div className="md:col-span-7 space-y-3.5">
+                  <div>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                      IEEE ClimateChain 2026 Brand Identity
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-2 tracking-tight">
+                      The GridVane Emblem Architecture
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Every geometric element in the GridVane emblem encodes one of the four cyber-physical pillars of our IEEE ClimateChain 2026 architecture:
+                    </p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
-                    <Wind className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        2. Tri-Vane Aerodynamic Rotor — LME Carbon &amp; IEEE 738 DLR
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
+                      <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-white">
+                          1. Outer Hexagonal Truss — NIST FIPS 204 Lattice Shield
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Represents the Module-Lattice (ML-DSA-65) post-quantum cryptographic perimeter protecting 20-year grid infrastructure against quantum key forgery.
+                        </p>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Three directional turbine vanes steer power flow toward Locational Marginal Emissions (LME_i,t) minima while harvesting convective wind cooling.
-                      </p>
                     </div>
-                  </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
-                    <Flame className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        3. Gold Thermodynamic Filaments — IEEE Std C57.91 Protection
+                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
+                      <Wind className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-white">
+                          2. Tri-Vane Aerodynamic Rotor — LME Carbon &amp; IEEE 738 DLR
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Three directional turbine vanes steer power flow toward Locational Marginal Emissions (LME_i,t) minima while harvesting convective wind cooling.
+                        </p>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Golden thermal veins trace the Arrhenius insulation boundary (Θ_H ≤ 110°C), shielding transformers during 43.8°C COP31 heatwaves.
-                      </p>
                     </div>
-                  </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
-                    <Cpu className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        4. Central Phasor Star Core — Kirchhoff AC Residual Gate
+                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
+                      <Flame className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-white">
+                          3. Gold Thermodynamic Filaments — IEEE Std C57.91 Protection
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Golden thermal veins trace the Arrhenius insulation boundary (Θ_H ≤ 110°C), shielding transformers during 43.8°C COP31 heatwaves.
+                        </p>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        The luminous crosshair singularity represents exact AC power balance (r_ij ≤ 2.5 kW) and atomic Triple-Silo settlement.
-                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
+                      <Cpu className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-white">
+                          4. Central Phasor Star Core — Kirchhoff AC Residual Gate
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          The luminous crosshair singularity represents exact AC power balance (r_ij ≤ 2.5 kW) and atomic Triple-Silo settlement.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </>
   );
 }

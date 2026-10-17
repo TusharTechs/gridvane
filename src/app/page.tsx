@@ -18,6 +18,7 @@ import {
   evaluateKirchhoffFirewall,
 } from "@/lib/security/kirchhoffFirewall";
 import { GridVaneLogo } from "@/components/GridVaneLogo";
+import { ProblemSolutionModal } from "@/components/ProblemSolutionModal";
 import { FeederTopologyMap } from "@/components/FeederTopologyMap";
 import { Diurnal24hChart } from "@/components/Diurnal24hChart";
 import { TransformerThermalPanel } from "@/components/TransformerThermalPanel";
@@ -45,6 +46,7 @@ import {
   MapPin,
   Sun,
   Moon,
+  PlayCircle,
 } from "lucide-react";
 
 type CockpitTabId =
@@ -58,6 +60,8 @@ type CockpitTabId =
 export default function GridVaneCockpitPage() {
   // Default to IEEE & UN COP31 Executive Daylight Studio Theme
   const [isLightMode, setIsLightMode] = useState<boolean>(true);
+  const [showStoryModal, setShowStoryModal] = useState<boolean>(false);
+  const [storyInitialSlide, setStoryInitialSlide] = useState<number>(0);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -321,8 +325,20 @@ export default function GridVaneCockpitPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
               <button
+                id="open-story-modal-btn"
+                onClick={() => {
+                  setStoryInitialSlide(0);
+                  setShowStoryModal(true);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold flex items-center gap-2 transition"
+              >
+                <PlayCircle className="w-4 h-4 text-emerald-400" />
+                Problem &amp; Solution Storyboard
+              </button>
+              <button
+                id="sync-weather-btn"
                 onClick={handleFetchLiveWeather}
                 disabled={isFetchingWeather}
                 className="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold flex items-center gap-2 transition"
@@ -332,6 +348,12 @@ export default function GridVaneCockpitPage() {
               </button>
             </div>
           </div>
+
+          <ProblemSolutionModal
+            isOpen={showStoryModal}
+            onClose={() => setShowStoryModal(false)}
+            initialSlide={storyInitialSlide}
+          />
 
           {/* 6 Interactive Judging Criterion Stepper Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">

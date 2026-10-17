@@ -5,3 +5,6 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+.venv_video/
+.video_tmp/
+*.mp4
