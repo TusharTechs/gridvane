@@ -1,0 +1,69 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2780 >>
+stream
+BT
+/F1 10 Tf
+45 750 Td
+18 TL
+(GRIDVANE: PHYSICS-VERIFIED, QUANTUM-SAFE THERMO-CARBON VPP & CLIMATE LEDGER) Tj T*
+(IEEE ClimateChain Global Hackathon 2026 - Official Executive & Security Brief) Tj T*
+(Primary Track: Track 2 \(Renewable Energy & Energy Trading\) + Cross-Tracks 1, 4, 3) Tj T*
+(Target Showcase: UN COP31 \(Antalya, Turkiye - November 10-21, 2026\)) Tj T*
+(--------------------------------------------------------------------------------) Tj T*
+(1. THE CLIMATE-GRID PARADOX & ORACLE INTEGRITY CRISIS) Tj T*
+(   - Solar PV Thermal Derating: At 43.8C ambient heatwaves \(Antalya COP31\),) Tj T*
+(     silicon PV cells reach 75.0C and lose -15.4% to -21.0% output \(-0.42%/C\)) Tj T*
+(     at the exact hour AC cooling load surges by +42%.) Tj T*
+(   - IEEE Std C57.91 Transformer Aging: Winding hot-spot temperatures reach) Tj T*
+(     126C-134.3C, accelerating Arrhenius insulation failure \(F_AA = 2.67x-9.8x\).) Tj T*
+(   - FDIA & Quantum Exposure: Standard dMRV apps trust raw smart-meter JSON) Tj T*
+(     \(vulnerable to CT-clamp spoofing and 20-year quantum key forgery\) and) Tj T*
+(     allow double-counting across Verra VCM, I-REC, and EU CBAM.) Tj T*
+(--------------------------------------------------------------------------------) Tj T*
+(2. FIVE INTEGRATED CYBER-PHYSICAL BREAKTHROUGHS) Tj T*
+(   [1] Baran & Wu IEEE 33-Bus AC DistFlow Solver & Locational Marginal Emissions) Tj T*
+(       LME_{i,t} = MEF_t * \(1 + dPloss/dP_i\) -> +39% to +44.8% carbon gain.) Tj T*
+(   [2] IEEE Std C57.91 Transformer Thermal Co-Optimizer & TSRS / IFRS S2 AAL) Tj T*
+(       Cools peak hot-spot from 134.3C to 104.5C \(-96.0% aging F_AA\).) Tj T*
+(   [3] Kirchhoff AC Physics-Residual Firewall \(99.4% FDIA Detection in 11.4ms\)) Tj T*
+(       Blocks spoofed solar kWh when branch residual r_ij > 2.50 kW.) Tj T*
+(   [4] Genuine NIST FIPS 204 ML-DSA-65 Lattice Signatures & PP-PQB Privacy) Tj T*
+(       1,952-byte PK, 3,309-byte sig, 1.9ms verify + blinded household load.) Tj T*
+(   [5] Explainable AI \(XAI\) Shapley Dispatch, Thermal-Equity Safety Gate &) Tj T*
+(       IEEE P3271.01 Recurring DLT + Triple-Silo Anti-Double-Counting Contract.) Tj T*
+(--------------------------------------------------------------------------------) Tj T*
+(3. GRIDBENCH 720-HOUR \(30-DAY\) EMPIRICAL ABLATION RESULTS) Tj T*
+(   - Antalya \(COP31\): -1,010.8 tCO2e \(+44.8% LME\), Loss -55.9%, Hot-Spot 104.5C) Tj T*
+(   - Ankara \(Gazi\)  : -1,125.9 tCO2e \(+43.7% LME\), Loss -57.5%, Hot-Spot 92.3C) Tj T*
+(   - Tartu \(Estonia\): -670.2 tCO2e \(+39.2% LME\), Loss -52.6%, Hot-Spot 76.4C) Tj T*
+(   - Irvine \(CA USA\): -763.0 tCO2e \(+42.5% LME\), Loss -51.8%, Hot-Spot 102.0C) Tj T*
+(   - Vulnerable Clinic Cooling Curtailed: 0 Hours across all 4 feeders \(100% Safe\)) Tj T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000003073 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+3141
+%%EOF
