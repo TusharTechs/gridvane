@@ -7,10 +7,110 @@
 }
 
 body {
-  background-color: #060b14;
+  background-color: #040812;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(16, 185, 129, 0.14), transparent 60%),
+    radial-gradient(ellipse 70% 45% at 85% -5%, rgba(6, 182, 212, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 50% 105%, rgba(139, 92, 246, 0.08), transparent 60%),
+    linear-gradient(to right, rgba(24, 38, 66, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 38, 66, 0.22) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-attachment: fixed;
   color: #f8fafc;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+}
+
+/* Glassmorphic Panel & Card Primitives */
+.bg-grid-panel {
+  background: linear-gradient(165deg, rgba(13, 23, 44, 0.88) 0%, rgba(7, 13, 27, 0.94) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 36px -8px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+}
+
+.gv-glass-card {
+  background: linear-gradient(155deg, rgba(15, 26, 50, 0.85) 0%, rgba(7, 13, 26, 0.92) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  box-shadow:
+    0 14px 34px -10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gv-glass-card:hover {
+  border-color: rgba(56, 189, 248, 0.34);
+  transform: translateY(-1px);
+}
+
+/* Animated Electron Flow for 33-Bus Feeder Branches */
+@keyframes electronFlow {
+  0% {
+    stroke-dashoffset: 28;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-electron-flow {
+  animation: electronFlow 1.35s linear infinite;
+}
+
+.animate-electron-fast {
+  animation: electronFlow 0.75s linear infinite;
+}
+
+@keyframes radarPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+}
+
+.animate-radar-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: radarPulse 2.4s ease-in-out infinite;
+}
+
+/* Custom Tactile Range Sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(71, 85, 105, 0.45);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 2.5px solid #06b6d4;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.95);
 }
 
 /* Custom sleek scrollbars for SCADA tables */
@@ -20,7 +120,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #060b14;
+  background: #040812;
 }
 
 ::-webkit-scrollbar-thumb {

@@ -17,6 +17,7 @@ import {
   AdversarialAttackType,
   evaluateKirchhoffFirewall,
 } from "@/lib/security/kirchhoffFirewall";
+import { GridVaneLogo } from "@/components/GridVaneLogo";
 import { FeederTopologyMap } from "@/components/FeederTopologyMap";
 import { Diurnal24hChart } from "@/components/Diurnal24hChart";
 import { TransformerThermalPanel } from "@/components/TransformerThermalPanel";
@@ -38,6 +39,10 @@ import {
   KeyRound,
   Sparkles,
   Wind,
+  Sliders,
+  Compass,
+  CheckCircle2,
+  MapPin,
 } from "lucide-react";
 
 type CockpitTabId =
@@ -196,38 +201,30 @@ export default function GridVaneCockpitPage() {
   const { metricsComparison, activeState } = vppResult;
 
   return (
-    <div className="min-h-screen bg-grid-bg text-slate-100 pb-14">
-      {/* Top Mission Control Navigation Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-[#060B14]/90 border-b border-grid-border px-4 lg:px-6 py-3">
-        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
-          {/* Brand Title & Hackathon Track Badges */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/30 via-cyan-500/20 to-slate-900 border border-emerald-500/50 flex items-center justify-center shadow-lg shadow-emerald-950/50">
-              <Zap className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-base md:text-lg font-extrabold tracking-tight text-white">
-                  GRIDVANE
-                </h1>
-                <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                  Track 2: Renewable Energy &amp; VPP
-                </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                  + Tracks 1 (Carbon LME) · 4 (CORDEX/TSRS) · 3 (EV Circular)
-                </span>
-                <span className="hidden xl:inline-block px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                  COP31 Antalya Showcase
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Physics-Verified, Quantum-Safe Thermo-Carbon VPP &amp; Triple-Silo Grid Resilience Ledger
-              </p>
+    <div className="min-h-screen text-slate-100 pb-16">
+      {/* Top Glassmorphic Mission Control Navbar */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#040814]/85 border-b border-cyan-500/20 px-4 lg:px-8 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.65)]">
+        <div className="max-w-[1480px] mx-auto flex flex-wrap items-center justify-between gap-4">
+          {/* Custom GridVane Emblem + Wordmark + Modal Trigger */}
+          <div className="flex items-center gap-5">
+            <GridVaneLogo size="md" interactiveModal={true} />
+
+            {/* Live Verification Badges */}
+            <div className="hidden xl:flex items-center gap-2 pl-4 border-l border-slate-800">
+              <span className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/35">
+                Track 2 VPP + Tracks 1 · 4 · 3
+              </span>
+              <span className="px-2.5 py-1 text-[10px] font-mono font-semibold rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                solc 0.8.28 Verified
+              </span>
+              <span className="px-2.5 py-1 text-[10px] font-mono font-semibold rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                UN COP31 Antalya Twin
+              </span>
             </div>
           </div>
 
           {/* 4 Regional Feeder Digital Twin Switcher */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800">
+          <div className="flex flex-wrap items-center gap-1.5 bg-[#050B18] p-1.5 rounded-2xl border border-slate-800/90 shadow-inner">
             {(Object.keys(FEEDER_PRESETS) as FeederPresetId[]).map((id) => {
               const p = FEEDER_PRESETS[id];
               const active = feederId === id;
@@ -235,13 +232,13 @@ export default function GridVaneCockpitPage() {
                 <button
                   key={id}
                   onClick={() => handleSelectFeeder(id)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
                     active
-                      ? "bg-emerald-500/20 text-emerald-200 border border-emerald-500/50 font-bold shadow"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-gradient-to-r from-emerald-500/25 to-cyan-500/20 text-white border border-emerald-400/50 font-bold shadow-glow-emerald"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
                   }`}
                 >
-                  <span>{p.flag}</span>
+                  <span className="text-sm">{p.flag}</span>
                   <span>{p.shortName}</span>
                 </button>
               );
@@ -250,24 +247,52 @@ export default function GridVaneCockpitPage() {
         </div>
       </header>
 
-      {/* Main Content Container */}
-      <main className="max-w-[1440px] mx-auto px-4 lg:px-6 pt-4 space-y-4">
-        {/* 6-Step Interactive Judge Guided Walkthrough Bar */}
-        <section className="bg-gradient-to-r from-emerald-950/40 via-slate-900/90 to-cyan-950/40 border border-emerald-500/30 rounded-xl p-3 shadow-lg">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                Interactive Judge Tour
-              </span>
-              <span className="text-xs font-semibold text-white">
-                Click any Hackathon Judging Criterion below to auto-configure the 33-Bus Feeder &amp; verify live proofs:
-              </span>
+      {/* Main Command Workspace */}
+      <main className="max-w-[1480px] mx-auto px-4 lg:px-8 pt-5 space-y-5">
+        {/* Executive Hero Deck & 6-Step Interactive Judge Guided Tour */}
+        <section className="gv-glass-card rounded-3xl p-4 lg:p-6 relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-800/80">
+            <div className="flex items-start sm:items-center gap-4">
+              <img
+                src="/gridvane-logo.jpg"
+                alt="GridVane Official Emblem"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-cyan-400/40 shadow-glow-cyan shrink-0"
+              />
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 flex items-center gap-1">
+                    <Compass className="w-3 h-3" /> Interactive Judge Evaluation Deck
+                  </span>
+                  <span className="text-xs font-mono text-cyan-300 flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> {preset.name} ({preset.country})
+                  </span>
+                </div>
+                <h2 className="font-display text-lg sm:text-xl font-extrabold text-white mt-1 tracking-tight">
+                  Physics-Verified, Quantum-Safe Thermo-Carbon VPP &amp; Triple-Silo Climate Ledger
+                </h2>
+                <p className="text-xs text-slate-300 mt-0.5 max-w-4xl">
+                  Select any of the <strong>6 IEEE ClimateChain Judging Criteria</strong> below to auto-configure the 33-bus AC distribution feeder and inspect live mathematical, cryptographic, and smart-contract proofs:
+                </p>
+              </div>
             </div>
-            <span className="text-[11px] font-mono text-slate-400">
-              100% Real-Time Physics + NIST FIPS 204 + Compiled Solidity 0.8.28
-            </span>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={handleFetchLiveWeather}
+                disabled={isFetchingWeather}
+                className="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 text-xs font-mono font-bold flex items-center gap-2 transition shadow-glow-cyan"
+              >
+                <CloudSun className="w-4 h-4 text-cyan-300" />
+                {isFetchingWeather ? "Syncing Satellite..." : "Sync Live Open-Meteo"}
+              </button>
+            </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+
+          {/* 6 Interactive Judging Criterion Stepper Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             <button
               onClick={() => {
                 setIsPlaying24h(false);
@@ -281,19 +306,20 @@ export default function GridVaneCockpitPage() {
                 setSelectedBusId(18);
                 setActiveTab("THERMAL_C57");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "THERMAL_C57"
-                  ? "bg-amber-500/20 border-amber-500/50 text-amber-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-amber-500/25 via-slate-900/90 to-slate-950 border-amber-400/60 shadow-glow-amber"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-amber-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">
-                STEP 1 · CLIMATE (30%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-amber-400">
+                <span>01 · CLIMATE</span>
+                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">30%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
-                C57.91 + LME + TSRS
+              <div className="font-display text-xs font-bold text-white mt-1.5">
+                IEEE C57.91 + LME
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
                 -68% Aging · +18.9% CO₂
               </div>
             </button>
@@ -306,19 +332,20 @@ export default function GridVaneCockpitPage() {
                 setVppMode("GRIDVANE_THERMO_CARBON_VPP");
                 setActiveTab("P3271_SILOS");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "P3271_SILOS"
-                  ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-emerald-500/25 via-slate-900/90 to-slate-950 border-emerald-400/60 shadow-glow-emerald"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-emerald-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-emerald-400">
-                STEP 2 · DLT &amp; P3271 (30%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-emerald-400">
+                <span>02 · DLT &amp; P3271</span>
+                <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">30%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
+              <div className="font-display text-xs font-bold text-white mt-1.5">
                 Triple-Silo + EVM
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
                 solc 0.8.28 · 0 Double-Count
               </div>
             </button>
@@ -332,19 +359,20 @@ export default function GridVaneCockpitPage() {
                 setFirewallEnabled(true);
                 setActiveTab("KIRCHHOFF_PQC");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "KIRCHHOFF_PQC"
-                  ? "bg-rose-500/20 border-rose-500/50 text-rose-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-rose-500/25 via-slate-900/90 to-slate-950 border-rose-400/60 shadow-glow-rose"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-rose-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-rose-400">
-                STEP 3 · SECURITY (10%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-rose-400">
+                <span>03 · SECURITY</span>
+                <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">10%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
+              <div className="font-display text-xs font-bold text-white mt-1.5">
                 FDIA + ML-DSA-65
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
                 +85kW Spoof Quarantined
               </div>
             </button>
@@ -357,19 +385,20 @@ export default function GridVaneCockpitPage() {
                 setSelectedBusId(18);
                 setActiveTab("DLR_SKYVISION_AGENTS");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "DLR_SKYVISION_AGENTS"
-                  ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-cyan-500/25 via-slate-900/90 to-slate-950 border-cyan-400/60 shadow-glow-cyan"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-cyan-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-cyan-400">
-                STEP 4 · FEASIBILITY (10%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-cyan-400">
+                <span>04 · FEASIBILITY</span>
+                <span className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300">10%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
+              <div className="font-display text-xs font-bold text-white mt-1.5">
                 IEEE 738 + SkyVision
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
                 5-Agent Pareto + Merkle
               </div>
             </button>
@@ -381,20 +410,21 @@ export default function GridVaneCockpitPage() {
                 setEquityGateEnabled(true);
                 setActiveTab("XAI_EQUITY");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "XAI_EQUITY"
-                  ? "bg-sky-500/20 border-sky-500/50 text-sky-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-sky-500/25 via-slate-900/90 to-slate-950 border-sky-400/60 shadow-glow-cyan"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-sky-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-sky-400">
-                STEP 5 · UX &amp; XAI (10%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-sky-400">
+                <span>05 · UX &amp; XAI</span>
+                <span className="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300">10%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
+              <div className="font-display text-xs font-bold text-white mt-1.5">
                 Shapley + Equity Gate
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
-                1,270 Vulnerable Protected
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
+                1,270 Vulnerable Safe
               </div>
             </button>
 
@@ -403,391 +433,483 @@ export default function GridVaneCockpitPage() {
                 setIsPlaying24h(false);
                 setActiveTab("GRIDBENCH_RUBRIC");
               }}
-              className={`p-2 rounded-lg border text-left transition ${
+              className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "GRIDBENCH_RUBRIC"
-                  ? "bg-violet-500/20 border-violet-500/50 text-violet-200"
-                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+                  ? "bg-gradient-to-br from-violet-500/25 via-slate-900/90 to-slate-950 border-violet-400/60"
+                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-violet-500/40"
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-violet-400">
-                STEP 6 · SCALE (10%)
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-violet-400">
+                <span>06 · SCALABILITY</span>
+                <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-300">10%</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-0.5">
+              <div className="font-display text-xs font-bold text-white mt-1.5">
                 GridBench 720h Suite
               </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate">
+              <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
                 4 Feeders · 12-Judge Matrix
               </div>
             </button>
           </div>
         </section>
 
-        {/* Global Cyber-Physical Control & Scenario Bar */}
-        <section className="bg-grid-panel border border-grid-border rounded-xl p-4 shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
-            {/* 1. Ambient Heatwave Slider */}
-            <div className="bg-slate-950/80 border border-slate-800/90 rounded-lg p-2.5">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-slate-400 font-mono flex items-center gap-1">
-                  <Flame className="w-3.5 h-3.5 text-amber-400" /> Ambient Temp (Θ_A)
-                </span>
-                <span
-                  className={`font-mono font-bold ${
-                    ambientTempC >= 40 ? "text-rose-400" : "text-amber-300"
-                  }`}
-                >
-                  {ambientTempC.toFixed(1)}°C
-                </span>
-              </div>
-              <input
-                type="range"
-                min={20}
-                max={48}
-                step={0.5}
-                value={ambientTempC}
-                onChange={(e) => {
-                  setIsPlaying24h(false);
-                  setAmbientTempC(Number(e.target.value));
-                }}
-                className="w-full accent-amber-500 cursor-pointer"
-              />
-              <div className="flex justify-between text-[10px] font-mono text-slate-500">
-                <span>20°C Mild</span>
-                <span>35°C Hot</span>
-                <span>48°C Extreme</span>
-              </div>
-            </div>
-
-            {/* 2. Solar Irradiance Slider */}
-            <div className="bg-slate-950/80 border border-slate-800/90 rounded-lg p-2.5">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-slate-400 font-mono flex items-center gap-1">
-                  <CloudSun className="w-3.5 h-3.5 text-cyan-400" /> Irradiance (G_t)
-                </span>
-                <span className="font-mono font-bold text-cyan-300">
-                  {irradianceWm2} W/m²
-                </span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={1050}
-                step={15}
-                value={irradianceWm2}
-                onChange={(e) => {
-                  setIsPlaying24h(false);
-                  setIrradianceWm2(Number(e.target.value));
-                }}
-                className="w-full accent-cyan-400 cursor-pointer"
-              />
-              <div className="flex justify-between text-[10px] font-mono text-slate-500">
-                <span>0 (Night)</span>
-                <span>550</span>
-                <span>1050 W/m²</span>
-              </div>
-            </div>
-
-            {/* 3. CMIP6 Climate Pathway Selector */}
-            <div className="bg-slate-950/80 border border-slate-800/90 rounded-lg p-2.5">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">
-                CMIP6 / CORDEX Risk Horizon
-              </label>
-              <div className="grid grid-cols-3 gap-1 text-[11px] font-mono">
-                {(Object.keys(CMIP6_SCENARIOS) as CMIP6ScenarioId[]).map((scKey) => {
-                  const sc = CMIP6_SCENARIOS[scKey];
-                  const active = scenarioId === scKey;
-                  return (
-                    <button
-                      key={scKey}
-                      onClick={() => setScenarioId(scKey)}
-                      className={`py-1 px-1.5 rounded border text-center transition ${
-                        active
-                          ? "bg-amber-500/20 text-amber-200 border-amber-500/50 font-bold"
-                          : "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
-                      }`}
-                    >
-                      {sc.label.split(" ")[0]}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="text-[10px] text-slate-500 font-mono mt-1 truncate">
-                {CMIP6_SCENARIOS[scenarioId].name}
-              </div>
-            </div>
-
-            {/* 4. VPP Dispatch Strategy Mode */}
-            <div className="bg-slate-950/80 border border-slate-800/90 rounded-lg p-2.5">
-              <label className="text-[10px] font-mono uppercase text-slate-400 block mb-1">
-                Active Control Regime
-              </label>
-              <div className="grid grid-cols-3 gap-1 text-[11px] font-mono">
-                <button
-                  onClick={() => setVppMode("UNCONTROLLED_BASELINE")}
-                  className={`py-1 px-1.5 rounded border transition ${
-                    vppMode === "UNCONTROLLED_BASELINE"
-                      ? "bg-rose-500/20 text-rose-200 border-rose-500/50 font-bold"
-                      : "bg-slate-900 text-slate-400 border-slate-800"
-                  }`}
-                >
-                  Baseline
-                </button>
-                <button
-                  onClick={() => setVppMode("NAIVE_CARBON_ONLY_VPP")}
-                  className={`py-1 px-1.5 rounded border transition ${
-                    vppMode === "NAIVE_CARBON_ONLY_VPP"
-                      ? "bg-amber-500/20 text-amber-200 border-amber-500/50 font-bold"
-                      : "bg-slate-900 text-slate-400 border-slate-800"
-                  }`}
-                >
-                  Naive VPP
-                </button>
-                <button
-                  onClick={() => setVppMode("GRIDVANE_THERMO_CARBON_VPP")}
-                  className={`py-1 px-1.5 rounded border transition ${
-                    vppMode === "GRIDVANE_THERMO_CARBON_VPP"
-                      ? "bg-emerald-500/20 text-emerald-200 border-emerald-500/50 font-bold"
-                      : "bg-slate-900 text-slate-400 border-slate-800"
-                  }`}
-                >
-                  GridVane
-                </button>
-              </div>
-              <div className="text-[10px] text-emerald-400 font-mono mt-1 truncate">
-                {vppMode === "GRIDVANE_THERMO_CARBON_VPP"
-                  ? "Thermo-Carbon + Equity Active"
-                  : vppMode === "NAIVE_CARBON_ONLY_VPP"
-                  ? "Ignores Trafo & Equity Limits"
-                  : "Uncontrolled Feeder Flow"}
-              </div>
-            </div>
-
-            {/* 5. Quick Judge Actions (Live Weather + FDIA Demo Trigger) */}
-            <div className="flex flex-col gap-1.5">
-              <button
-                onClick={handleFetchLiveWeather}
-                disabled={isFetchingWeather}
-                className="w-full py-1.5 px-3 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-semibold flex items-center justify-center gap-1.5 transition"
-              >
-                <CloudSun className="w-3.5 h-3.5" />
-                {isFetchingWeather ? "Syncing Open-Meteo..." : "Sync Live Open-Meteo"}
-              </button>
-              <button
-                onClick={() => {
-                  if (attackType === "NONE") {
-                    setAttackType("SOLAR_EXPORT_INFLATION");
-                    setSelectedBusId(18);
-                    setSpoofKW(85);
-                    setActiveTab("KIRCHHOFF_PQC");
-                  } else {
-                    setAttackType("NONE");
-                    setSpoofKW(0);
-                  }
-                }}
-                className={`w-full py-1.5 px-3 rounded-lg text-xs font-mono font-semibold border flex items-center justify-center gap-1.5 transition ${
-                  attackType !== "NONE"
-                    ? "bg-rose-500/25 text-rose-200 border-rose-500/50"
-                    : "bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700"
-                }`}
-              >
-                <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
-                {attackType !== "NONE"
-                  ? "Clear FDIA Spoof Attack"
-                  : "Simulate +85kW FDIA Spoof"}
-              </button>
-              <div className="text-[10px] font-mono text-slate-500 text-center truncate">
-                Source: {weatherSyncStatus}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 6 Real-Time Cyber-Physical KPI Cards */}
-        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {/* 6 Real-Time Bento Telemetry Cards with Visual Gauges */}
+        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
           {/* KPI 1: LME Carbon Avoided */}
-          <div className="bg-grid-panel border border-emerald-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
-              <span>Avoided Emissions</span>
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+              <span>Avoided Carbon</span>
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-emerald-400 mt-1">
-              +{metricsComparison.gridvane.avoidedEmissionsKgCO2e} kg/h
+            <div className="font-display text-xl font-extrabold text-emerald-400 mt-1.5">
+              +{metricsComparison.gridvane.avoidedEmissionsKgCO2e}{" "}
+              <span className="text-xs font-mono font-normal text-slate-400">kg/h</span>
             </div>
-            <div className="text-[11px] font-mono text-emerald-300 mt-0.5">
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 w-[86%]" />
+            </div>
+            <div className="text-[11px] font-mono text-emerald-300 mt-1.5">
               +{metricsComparison.gridvane.lmeBonusCarbonPct}% LME Nodal Bonus
             </div>
           </div>
 
           {/* KPI 2: IEEE C57.91 Transformer Hot-Spot */}
-          <div className="bg-grid-panel border border-amber-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
-              <span>Peak Trafo Hot-Spot</span>
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+              <span>Peak Trafo Θ_H</span>
               <Flame className="w-3.5 h-3.5 text-amber-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-white mt-1">
-              {metricsComparison.gridvane.maxTransformerHotSpotC}°C{" "}
-              <span className="text-xs font-normal text-rose-400 line-through">
+            <div className="font-display text-xl font-extrabold text-white mt-1.5 flex items-baseline gap-1.5">
+              <span>{metricsComparison.gridvane.maxTransformerHotSpotC}°C</span>
+              <span className="text-xs font-mono font-normal text-rose-400 line-through">
                 {metricsComparison.baseline.maxTransformerHotSpotC}°C
               </span>
             </div>
-            <div className="text-[11px] font-mono text-amber-300 mt-0.5">
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-400 to-amber-400"
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (metricsComparison.gridvane.maxTransformerHotSpotC / 140) * 100
+                  )}%`,
+                }}
+              />
+            </div>
+            <div className="text-[11px] font-mono text-amber-300 mt-1.5">
               -{metricsComparison.gridvane.faaReductionPct}% IEEE C57.91 Aging
             </div>
           </div>
 
           {/* KPI 3: TSRS / IFRS S2 Expected Annual Loss Saved */}
-          <div className="bg-grid-panel border border-cyan-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-400 to-blue-500" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>TSRS / IFRS S2 AAL</span>
               <Zap className="w-3.5 h-3.5 text-cyan-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-cyan-300 mt-1">
-              -${metricsComparison.gridvane.aalSavingsUSDPerYear.toLocaleString()}/yr
+            <div className="font-display text-xl font-extrabold text-cyan-300 mt-1.5">
+              -${metricsComparison.gridvane.aalSavingsUSDPerYear.toLocaleString()}
+              <span className="text-xs font-mono font-normal text-slate-400">/yr</span>
             </div>
-            <div className="text-[11px] font-mono text-slate-400 mt-0.5">
-              Line Loss: -{metricsComparison.gridvane.lineLossReductionPct}% (I²R)
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 w-[78%]" />
+            </div>
+            <div className="text-[11px] font-mono text-slate-300 mt-1.5">
+              I²R Line Loss: -{metricsComparison.gridvane.lineLossReductionPct}%
             </div>
           </div>
 
           {/* KPI 4: Kirchhoff Residual Firewall */}
-          <div className="bg-grid-panel border border-rose-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
-              <span>Kirchhoff Firewall</span>
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+              <span>Kirchhoff Gate</span>
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-white mt-1">
-              {firewallReport.verifiedCleanCount}/{firewallReport.totalBusesAudited} Clean
+            <div className="font-display text-xl font-extrabold text-white mt-1.5">
+              {firewallReport.verifiedCleanCount}/{firewallReport.totalBusesAudited}{" "}
+              <span className="text-xs font-mono font-normal text-emerald-300">Clean</span>
             </div>
-            <div className="text-[11px] font-mono text-rose-300 mt-0.5">
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div
+                className={`h-full ${
+                  firewallReport.quarantinedCount > 0 ? "bg-rose-500 w-[97%]" : "bg-emerald-400 w-full"
+                }`}
+              />
+            </div>
+            <div className="text-[11px] font-mono text-rose-300 mt-1.5 truncate">
               {firewallReport.quarantinedCount > 0
                 ? `${firewallReport.quarantinedCount} Quarantined (${firewallReport.maxResidualKW}kW)`
-                : `Max r=${firewallReport.maxResidualKW}kW (<2.5kW)`}
+                : `Max r=${firewallReport.maxResidualKW}kW (≤2.5kW)`}
             </div>
           </div>
 
           {/* KPI 5: Post-Quantum ML-DSA-65 */}
-          <div className="bg-grid-panel border border-violet-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-400 to-purple-500" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>PQC Attestation</span>
               <KeyRound className="w-3.5 h-3.5 text-violet-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-violet-300 mt-1">
+            <div className="font-display text-xl font-extrabold text-violet-300 mt-1.5">
               ML-DSA-65
             </div>
-            <div className="text-[11px] font-mono text-slate-400 mt-0.5">
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-500 w-full" />
+            </div>
+            <div className="text-[11px] font-mono text-slate-300 mt-1.5">
               FIPS 204 (3,309B) + PP-PQB
             </div>
           </div>
 
           {/* KPI 6: Responsible AI Thermal-Equity Gate */}
-          <div className="bg-grid-panel border border-sky-500/30 rounded-xl p-3">
-            <div className="text-[10px] font-mono uppercase text-slate-400 flex items-center justify-between">
-              <span>Thermal-Equity Gate</span>
+          <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-sky-400 to-cyan-300" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+              <span>Thermal Equity</span>
               <HeartPulse className="w-3.5 h-3.5 text-sky-400" />
             </div>
-            <div className="text-lg font-mono font-extrabold text-sky-300 mt-1">
-              {metricsComparison.gridvane.vulnerableCoolingCurtailedKW} kW Cut
+            <div className="font-display text-xl font-extrabold text-sky-300 mt-1.5">
+              {metricsComparison.gridvane.vulnerableCoolingCurtailedKW}{" "}
+              <span className="text-xs font-mono font-normal text-slate-300">kW Cut</span>
             </div>
-            <div className="text-[11px] font-mono text-emerald-400 mt-0.5">
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
+              <div className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 w-full" />
+            </div>
+            <div className="text-[11px] font-mono text-emerald-400 mt-1.5">
               1,270 Vulnerable Citizens Safe
             </div>
           </div>
         </section>
 
-        {/* Interactive 24-Hour Diurnal Replay Player & Multi-Curve Comparison Chart */}
-        <Diurnal24hChart
-          preset={preset}
-          scenarioId={scenarioId}
-          activeHour={activeHour}
-          isPlaying={isPlaying24h}
-          onTogglePlay={() => setIsPlaying24h((p) => !p)}
-          onSelectHour={handleSelectHour}
-        />
+        {/* Split-Screen Cyber-Physical Digital Twin & Parameter Control Dock */}
+        <section className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+          {/* Left 8 Columns: Interactive 33-Bus SCADA Canvas + 24-Hour Diurnal Player */}
+          <div className="xl:col-span-8 space-y-5">
+            <FeederTopologyMap
+              feederState={activeState}
+              selectedBusId={selectedBusId}
+              onSelectBus={setSelectedBusId}
+              nodeAudits={firewallReport.nodeAudits}
+            />
 
-        {/* Interactive IEEE 33-Bus Radial Distribution Network Twin */}
-        <FeederTopologyMap
-          feederState={activeState}
-          selectedBusId={selectedBusId}
-          onSelectBus={setSelectedBusId}
-          nodeAudits={firewallReport.nodeAudits}
-        />
+            <Diurnal24hChart
+              preset={preset}
+              scenarioId={scenarioId}
+              activeHour={activeHour}
+              isPlaying={isPlaying24h}
+              onTogglePlay={() => setIsPlaying24h((p) => !p)}
+              onSelectHour={handleSelectHour}
+            />
+          </div>
 
-        {/* 6 Deep-Dive Cockpit Module Tabs */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-grid-border pb-2">
+          {/* Right 4 Columns: Tactile Cyber-Physical Parameter & Red-Team Control Dock */}
+          <div className="xl:col-span-4 space-y-4">
+            <div className="gv-glass-card rounded-2xl p-5 relative overflow-hidden">
+              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-cyan-400 via-emerald-400 to-amber-400" />
+
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center">
+                    <Sliders className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-sm font-bold text-white">
+                      Cyber-Physical Control Dock
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-mono">
+                      {weatherSyncStatus}
+                    </p>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  REAL-TIME
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {/* 1. Ambient Heatwave Slider */}
+                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-slate-300 font-mono font-semibold flex items-center gap-1.5">
+                      <Flame className="w-4 h-4 text-amber-400" /> Ambient Heatwave (Θ_A)
+                    </span>
+                    <span
+                      className={`font-display text-base font-extrabold ${
+                        ambientTempC >= 40 ? "text-rose-400" : "text-amber-300"
+                      }`}
+                    >
+                      {ambientTempC.toFixed(1)}°C
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={20}
+                    max={48}
+                    step={0.5}
+                    value={ambientTempC}
+                    onChange={(e) => {
+                      setIsPlaying24h(false);
+                      setAmbientTempC(Number(e.target.value));
+                    }}
+                    className="w-full cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1.5">
+                    <span>20°C Mild</span>
+                    <span>35°C Summer</span>
+                    <span className="text-rose-400/90">48°C Extreme</span>
+                  </div>
+                </div>
+
+                {/* 2. Solar Irradiance Slider */}
+                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-slate-300 font-mono font-semibold flex items-center gap-1.5">
+                      <CloudSun className="w-4 h-4 text-cyan-400" /> Solar Irradiance (G_t)
+                    </span>
+                    <span className="font-display text-base font-extrabold text-cyan-300">
+                      {irradianceWm2} W/m²
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1050}
+                    step={15}
+                    value={irradianceWm2}
+                    onChange={(e) => {
+                      setIsPlaying24h(false);
+                      setIrradianceWm2(Number(e.target.value));
+                    }}
+                    className="w-full cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1.5">
+                    <span>0 W/m² (Night)</span>
+                    <span>550 W/m²</span>
+                    <span className="text-cyan-400/90">1050 W/m² Peak</span>
+                  </div>
+                </div>
+
+                {/* 3. CMIP6 Climate Pathway Selector */}
+                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2">
+                    CORDEX / CMIP6 Climate Horizon
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5 text-xs font-mono">
+                    {(Object.keys(CMIP6_SCENARIOS) as CMIP6ScenarioId[]).map((scKey) => {
+                      const sc = CMIP6_SCENARIOS[scKey];
+                      const active = scenarioId === scKey;
+                      return (
+                        <button
+                          key={scKey}
+                          onClick={() => setScenarioId(scKey)}
+                          className={`py-2 px-2 rounded-lg border text-center transition-all ${
+                            active
+                              ? "bg-amber-500/20 text-amber-200 border-amber-400/60 font-bold shadow-glow-amber"
+                              : "bg-slate-900/90 text-slate-400 border-slate-800 hover:text-slate-200"
+                          }`}
+                        >
+                          {sc.label.split(" ")[0]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="text-[11px] text-slate-400 font-mono mt-2 truncate">
+                    {CMIP6_SCENARIOS[scenarioId].name}
+                  </div>
+                </div>
+
+                {/* 4. VPP Dispatch Strategy Mode */}
+                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2">
+                    Active VPP Control Regime
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5 text-xs font-mono">
+                    <button
+                      onClick={() => setVppMode("UNCONTROLLED_BASELINE")}
+                      className={`py-2 px-2 rounded-lg border transition-all ${
+                        vppMode === "UNCONTROLLED_BASELINE"
+                          ? "bg-rose-500/20 text-rose-200 border-rose-400/60 font-bold"
+                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                      }`}
+                    >
+                      Baseline
+                    </button>
+                    <button
+                      onClick={() => setVppMode("NAIVE_CARBON_ONLY_VPP")}
+                      className={`py-2 px-2 rounded-lg border transition-all ${
+                        vppMode === "NAIVE_CARBON_ONLY_VPP"
+                          ? "bg-amber-500/20 text-amber-200 border-amber-400/60 font-bold"
+                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                      }`}
+                    >
+                      Naive VPP
+                    </button>
+                    <button
+                      onClick={() => setVppMode("GRIDVANE_THERMO_CARBON_VPP")}
+                      className={`py-2 px-2 rounded-lg border transition-all ${
+                        vppMode === "GRIDVANE_THERMO_CARBON_VPP"
+                          ? "bg-emerald-500/25 text-emerald-200 border-emerald-400/60 font-bold shadow-glow-emerald"
+                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                      }`}
+                    >
+                      GridVane
+                    </button>
+                  </div>
+                </div>
+
+                {/* 5. Red-Team FDIA Smart-Meter Spoof Trigger */}
+                <button
+                  onClick={() => {
+                    if (attackType === "NONE") {
+                      setAttackType("SOLAR_EXPORT_INFLATION");
+                      setSelectedBusId(18);
+                      setSpoofKW(85);
+                      setActiveTab("KIRCHHOFF_PQC");
+                    } else {
+                      setAttackType("NONE");
+                      setSpoofKW(0);
+                    }
+                  }}
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-mono font-bold border flex items-center justify-center gap-2 transition-all ${
+                    attackType !== "NONE"
+                      ? "bg-rose-500/25 text-rose-200 border-rose-400/60 shadow-glow-rose"
+                      : "bg-[#060E1F] hover:bg-rose-950/40 text-slate-200 border-rose-500/30 hover:border-rose-400/50"
+                  }`}
+                >
+                  <ShieldAlert className="w-4 h-4 text-rose-400" />
+                  {attackType !== "NONE"
+                    ? "Clear +85 kW FDIA Smart-Meter Spoof"
+                    : "Inject +85 kW FDIA Spoof on Bus #18"}
+                </button>
+              </div>
+            </div>
+
+            {/* Live 5-Pillar Cyber-Physical Verification Checklist */}
+            <div className="gv-glass-card rounded-2xl p-4 space-y-2.5">
+              <div className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                Live Cyber-Physical Proof Status
+              </div>
+              <div className="space-y-1.5 text-[11px] font-mono">
+                <div className="flex items-center justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">1. IEEE 33-Bus AC DistFlow</span>
+                  <span className="text-emerald-400 font-bold">
+                    CONVERGED ({activeState.convergenceIterations} iter)
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">2. IEEE Std C57.91 Insulation</span>
+                  <span className="text-amber-300 font-bold">
+                    Θ_H = {metricsComparison.gridvane.maxTransformerHotSpotC}°C (SAFE)
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">3. Kirchhoff Residual Firewall</span>
+                  <span
+                    className={
+                      firewallReport.quarantinedCount > 0
+                        ? "text-rose-400 font-bold"
+                        : "text-emerald-400 font-bold"
+                    }
+                  >
+                    {firewallReport.quarantinedCount > 0
+                      ? "1 SPOOF QUARANTINED"
+                      : "33/33 BUSES CLEAN"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">4. NIST FIPS 204 Lattice Root</span>
+                  <span className="text-violet-300 font-bold">ML-DSA-65 (3,309B)</span>
+                </div>
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-slate-400">5. EVM Smart Contract (solc)</span>
+                  <span className="text-cyan-300 font-bold">0.8.28 (5,359B)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Segmented Deep-Dive Engineering Workbench Navigation Dock */}
+        <div className="gv-glass-card rounded-2xl p-2 flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => setActiveTab("THERMAL_C57")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "THERMAL_C57"
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-amber-500/25 to-orange-500/15 text-amber-200 border border-amber-400/50 shadow-glow-amber"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <Flame className="w-3.5 h-3.5" />
-            1. IEEE C57.91 Trafo &amp; TSRS Risk
+            <Flame className="w-4 h-4 text-amber-400" />
+            <span>1. IEEE C57.91 Trafo &amp; TSRS Risk</span>
           </button>
 
           <button
             onClick={() => setActiveTab("DLR_SKYVISION_AGENTS")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "DLR_SKYVISION_AGENTS"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-cyan-500/25 to-blue-500/15 text-cyan-200 border border-cyan-400/50 shadow-glow-cyan"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <Wind className="w-3.5 h-3.5" />
-            2. IEEE 738 DLR, SkyVision &amp; 5-Agent Consensus
+            <Wind className="w-4 h-4 text-cyan-400" />
+            <span>2. IEEE 738 DLR, SkyVision &amp; 5-Agent Consensus</span>
           </button>
 
           <button
             onClick={() => setActiveTab("KIRCHHOFF_PQC")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "KIRCHHOFF_PQC"
-                ? "bg-rose-500/20 text-rose-300 border border-rose-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-rose-500/25 to-pink-500/15 text-rose-200 border border-rose-400/50 shadow-glow-rose"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            3. Kirchhoff Firewall &amp; FIPS 204 ML-DSA-65
+            <ShieldAlert className="w-4 h-4 text-rose-400" />
+            <span>3. Kirchhoff Firewall &amp; FIPS 204 ML-DSA-65</span>
           </button>
 
           <button
             onClick={() => setActiveTab("XAI_EQUITY")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "XAI_EQUITY"
-                ? "bg-sky-500/20 text-sky-300 border border-sky-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-sky-500/25 to-cyan-500/15 text-sky-200 border border-sky-400/50 shadow-glow-cyan"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <BrainCircuit className="w-3.5 h-3.5" />
-            4. Explainable AI (XAI) &amp; Equity Gate
+            <BrainCircuit className="w-4 h-4 text-sky-400" />
+            <span>4. Explainable AI (XAI) &amp; Equity Gate</span>
           </button>
 
           <button
             onClick={() => setActiveTab("P3271_SILOS")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "P3271_SILOS"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-emerald-500/25 to-teal-500/15 text-emerald-200 border border-emerald-400/50 shadow-glow-emerald"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <Link2 className="w-3.5 h-3.5" />
-            5. IEEE P3271.01 &amp; Triple-Silo Registry
+            <Link2 className="w-4 h-4 text-emerald-400" />
+            <span>5. IEEE P3271.01 &amp; Triple-Silo Registry</span>
           </button>
 
           <button
             onClick={() => setActiveTab("GRIDBENCH_RUBRIC")}
-            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "GRIDBENCH_RUBRIC"
-                ? "bg-violet-500/20 text-violet-300 border border-violet-500/50"
-                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+                ? "bg-gradient-to-r from-violet-500/25 to-purple-500/15 text-violet-200 border border-violet-400/50"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            6. GridBench 720h &amp; Judge Matrix
+            <BarChart3 className="w-4 h-4 text-violet-400" />
+            <span>6. GridBench 720h &amp; Judge Matrix</span>
           </button>
         </div>
 
-        {/* Active Tab Content */}
+        {/* Active Deep-Dive Workbench Content */}
         <section>
           {activeTab === "THERMAL_C57" && (
             <TransformerThermalPanel

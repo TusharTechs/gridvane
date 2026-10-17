@@ -10,9 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         grid: {
-          bg: "#060B14",
-          panel: "#0C1424",
-          border: "#1A2942",
+          bg: "#040812",
+          panel: "#091122",
+          border: "#182642",
           accent: "#10B981",
           cyan: "#06B6D4",
           amber: "#F59E0B",
@@ -21,8 +21,15 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        mono: ["JetBrains Mono", "Menlo", "Monaco", "Consolas", "monospace"],
+        sans: ["var(--font-sans)", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        display: ["var(--font-display)", "Space Grotesk", "Inter", "sans-serif"],
+        mono: ["var(--font-mono)", "JetBrains Mono", "Menlo", "monospace"],
+      },
+      boxShadow: {
+        "glow-emerald": "0 0 30px -5px rgba(16, 185, 129, 0.25)",
+        "glow-cyan": "0 0 30px -5px rgba(6, 182, 212, 0.25)",
+        "glow-amber": "0 0 30px -5px rgba(245, 158, 11, 0.25)",
+        "glow-rose": "0 0 30px -5px rgba(244, 63, 94, 0.3)",
       },
     },
   },
