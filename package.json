@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "bench": "npx tsx scripts/gridbench.ts",
-    "test": "npx tsx scripts/test-engine.ts"
+    "test:contracts": "npx tsx scripts/compile-and-test-contracts.ts",
+    "test": "npx tsx scripts/compile-and-test-contracts.ts && npx tsx scripts/gridbench.ts"
   },
   "dependencies": {
     "@noble/hashes": "^1.7.1",
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
+    "solc": "^0.8.28",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

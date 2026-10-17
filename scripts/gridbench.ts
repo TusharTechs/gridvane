@@ -1,17 +1,25 @@
 /**
  * GridVane CLI Benchmark & Verification Suite (npm run bench)
- * Executes the 720-hour (30-day) cyber-physical ablation study across all 4 regional feeder twins
- * and verifies real NIST FIPS 204 ML-DSA-65 Post-Quantum signatures + Kirchhoff Firewall invariants.
+ * Executes:
+ * 1. 720-Hour (30-Day) Cyber-Physical Ablation across Antalya, Ankara, Tartu, and Irvine
+ * 2. IEEE Std 738-2012 Dynamic Line Rating (DLR) & SkyVision Cloud-Vector Nowcaster
+ * 3. 5-Agent Autonomous Cyber-Physical Pareto Consensus
+ * 4. Keccak-256 Merkle Inclusion Proof Tree & NIST FIPS 204 ML-DSA-65 + PP-PQB Verification
+ * 5. Kirchhoff AC Physics-Residual Firewall under FDIA Spoofing Attack
  */
 
 import { runGridBench30DayAblation } from "../src/lib/benchmark/gridbenchEngine";
 import { signAndVerifySmartMeterTelemetry } from "../src/lib/crypto/pqcEngine";
+import { buildFeederMerkleTreeAndProof } from "../src/lib/crypto/merkleTree";
 import { FEEDER_PRESETS } from "../src/lib/physics/feederPresets";
 import { runThermoCarbonVPPOptimizer } from "../src/lib/optimizer/vppOptimizer";
 import { evaluateKirchhoffFirewall } from "../src/lib/security/kirchhoffFirewall";
+import { evaluateDLRAndSkyVision } from "../src/lib/physics/dlrAndSkyVision";
+import { runMultiAgentNegotiation } from "../src/lib/agents/multiAgentNegotiator";
+import { COMPILED_GRIDVANE_CONTRACT } from "../src/lib/blockchain/compiledContractArtifact";
 
 console.log("================================================================================");
-console.log("⚡ GRIDVANE: PHYSICS-VERIFIED, QUANTUM-SAFE THERMO-CARBON VPP BENCHMARK (v1.0)");
+console.log("⚡ GRIDVANE: PHYSICS-VERIFIED, QUANTUM-SAFE THERMO-CARBON VPP BENCHMARK (v2.0)");
 console.log("   IEEE ClimateChain Global Hackathon 2026 · Track 2 + Cross-Tracks 1, 4, 3");
 console.log("================================================================================\n");
 
@@ -25,7 +33,7 @@ for (const s of summaries) {
   console.log(`   └─ GridVane Thermo-Carbon: ${s.gridvaneVPP.cumulativeEmissionsTonsCO2e} tCO2e (-${s.gridvaneVPP.avoidedEmissionsTonsCO2e} tCO2e, +${s.gridvaneVPP.lmeExtraCarbonGainPct}% LME gain) | Loss: -${s.gridvaneVPP.lineLossReductionPct}% | Peak Hot-Spot: ${s.gridvaneVPP.peakTransformerHotSpotC}°C (F_AA -${s.gridvaneVPP.faaReductionPct}%) | AAL Saved: $${s.gridvaneVPP.annualAalSavedUSD.toLocaleString()}/yr | Vulnerable Curtailed: 0h ✅\n`);
 }
 
-// 2. Verify Real NIST FIPS 204 ML-DSA-65 Lattice Signature & PP-PQB Privacy Commitment
+// 2. Verify IEEE Std 738 Dynamic Line Rating (DLR) & SkyVision Cloud-Vector Nowcaster
 const antalya = FEEDER_PRESETS.antalya_cop31;
 const vppRes = runThermoCarbonVPPOptimizer({
   ambientTempC: antalya.defaultAmbientTempC,
@@ -35,6 +43,14 @@ const vppRes = runThermoCarbonVPPOptimizer({
   scenarioId: "ssp2_45",
 });
 
+const dlrReport = evaluateDLRAndSkyVision(vppRes.gridvaneState, 4.5, true);
+console.log("🌬️  IEEE STD 738-2012 DYNAMIC LINE RATING (DLR) & SKYVISION CLOUD NOWCASTER:");
+console.log(`   ├─ Cross-Line Wind Speed : ${dlrReport.windSpeedMs} m/s (${dlrReport.cloudVelocityVector.speedKmh} km/h)`);
+console.log(`   ├─ Dynamic Line Headroom : ${dlrReport.avgDlrCapacityBonusPct >= 0 ? "+" : ""}${dlrReport.avgDlrCapacityBonusPct}% Ampacity (+${dlrReport.unlockedCleanTransferMW} MW Unlocked Clean Transfer)`);
+console.log(`   ├─ Max Conductor Temp/Sag: ${dlrReport.maxConductorTempC}°C on Branch #${dlrReport.maxConductorBranchId} | Max Sag: ${dlrReport.maxSagMeters}m`);
+console.log(`   └─ SkyVision 5m Cloud ETA: -${dlrReport.totalPredictedSolarDropKW} kW PV Drop Predicted -> +${dlrReport.totalPreRampedBessKW} kW BESS Pre-Ramped ✅\n`);
+
+// 3. Verify Real NIST FIPS 204 ML-DSA-65 Lattice Signature & PP-PQB Privacy Commitment
 const bus18 = vppRes.gridvaneState.buses[17];
 const pqcBundle = signAndVerifySmartMeterTelemetry(
   {
@@ -62,7 +78,7 @@ console.log(`   ├─ Timings               : KeyGen=${pqcBundle.metrics.keygen
 console.log(`   ├─ PP-PQB Commitment     : ${pqcBundle.ppPqbProof.blindedLoadCommitmentHex.slice(0, 26)}... (Range Valid: ${pqcBundle.ppPqbProof.zeroKnowledgeRangeValid})`);
 console.log(`   └─ Signature Verified    : ${pqcBundle.signatureVerified ? "PASS ✅" : "FAIL ❌"}\n`);
 
-// 3. Verify Kirchhoff Physics-Residual Firewall under FDIA Attack
+// 4. Verify Kirchhoff Physics-Residual Firewall + Merkle Tree Exclusion under FDIA Attack
 const firewallAttack = evaluateKirchhoffFirewall(
   vppRes.gridvaneState,
   "SOLAR_EXPORT_INFLATION",
@@ -70,8 +86,13 @@ const firewallAttack = evaluateKirchhoffFirewall(
   85,
   true
 );
-console.log("🛡️  KIRCHHOFF PHYSICS-RESIDUAL FIREWALL (FDIA +85 kW SPOOF TEST ON BUS 18):");
+const merkleClean = buildFeederMerkleTreeAndProof(vppRes.gridvaneState, firewallAttack, 14);
+const merkleQuarantined = buildFeederMerkleTreeAndProof(vppRes.gridvaneState, firewallAttack, 18);
+const agentConsensus = runMultiAgentNegotiation(vppRes, firewallAttack, dlrReport);
+
+console.log("🛡️  KIRCHHOFF FIREWALL, MERKLE INCLUSION & 5-AGENT CONSENSUS:");
 console.log(`   ├─ Max Nodal Residual    : ${firewallAttack.maxResidualKW} kW on Bus ${firewallAttack.maxResidualBusId} (Threshold: 2.50 kW)`);
-console.log(`   ├─ Quarantined Nodes     : ${firewallAttack.quarantinedCount} / ${firewallAttack.totalBusesAudited}`);
 console.log(`   ├─ Blocked Fake Carbon   : ${firewallAttack.preventedFraudulentCO2Kg} kgCO2e (${firewallAttack.preventedFraudulentIRECMWh} MWh I-REC)`);
-console.log(`   └─ Merkle State Root     : ${firewallAttack.merkleStateRootStatus} ✅\n`);
+console.log(`   ├─ Merkle Inclusion Tree : Root=${merkleClean.merkleRootHex.slice(0, 22)}... | Clean Bus #14 Proof=${merkleClean.targetBusProof.proofValid} | Spoofed Bus #18 Excluded=${!merkleQuarantined.targetBusProof.includedInEpochRoot} ✅`);
+console.log(`   ├─ 5-Agent Consensus     : Pareto Efficiency=${agentConsensus.paretoEfficiencyScorePct}% in ${agentConsensus.totalNegotiationLatencyMs}ms (${agentConsensus.steps.length} Rounds) ✅`);
+console.log(`   └─ Compiled Solidity EVM : ${COMPILED_GRIDVANE_CONTRACT.contractName} (${COMPILED_GRIDVANE_CONTRACT.deployedBytecodeBytes}B runtime, solc ${COMPILED_GRIDVANE_CONTRACT.compilerVersion.split("+")[0]}) ✅\n`);

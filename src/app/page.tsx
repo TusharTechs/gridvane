@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   FEEDER_PRESETS,
   FeederPresetId,
@@ -18,7 +18,9 @@ import {
   evaluateKirchhoffFirewall,
 } from "@/lib/security/kirchhoffFirewall";
 import { FeederTopologyMap } from "@/components/FeederTopologyMap";
+import { Diurnal24hChart } from "@/components/Diurnal24hChart";
 import { TransformerThermalPanel } from "@/components/TransformerThermalPanel";
+import { DLRAndMultiAgentPanel } from "@/components/DLRAndMultiAgentPanel";
 import { KirchhoffAndPQCPanel } from "@/components/KirchhoffAndPQCPanel";
 import { XAIAndEquityPanel } from "@/components/XAIAndEquityPanel";
 import { SettlementAndSiloPanel } from "@/components/SettlementAndSiloPanel";
@@ -35,10 +37,12 @@ import {
   HeartPulse,
   KeyRound,
   Sparkles,
+  Wind,
 } from "lucide-react";
 
 type CockpitTabId =
   | "THERMAL_C57"
+  | "DLR_SKYVISION_AGENTS"
   | "KIRCHHOFF_PQC"
   | "XAI_EQUITY"
   | "P3271_SILOS"
@@ -57,6 +61,10 @@ export default function GridVaneCockpitPage() {
   const [vppMode, setVppMode] = useState<VPPDispatchMode>("GRIDVANE_THERMO_CARBON_VPP");
   const [equityGateEnabled, setEquityGateEnabled] = useState<boolean>(true);
 
+  // 24-Hour Diurnal Replay State
+  const [activeHour, setActiveHour] = useState<number>(14);
+  const [isPlaying24h, setIsPlaying24h] = useState<boolean>(false);
+
   // Selected Bus & Red-Team Security State
   const [selectedBusId, setSelectedBusId] = useState<number>(18);
   const [attackType, setAttackType] = useState<AdversarialAttackType>("NONE");
@@ -70,10 +78,41 @@ export default function GridVaneCockpitPage() {
   const [weatherSyncStatus, setWeatherSyncStatus] = useState<string>("ERA5 Heatwave Preset");
   const [isFetchingWeather, setIsFetchingWeather] = useState<boolean>(false);
 
+  // 24-Hour Diurnal Animation Timer
+  useEffect(() => {
+    if (!isPlaying24h) return;
+    const timer = setInterval(() => {
+      setActiveHour((prev) => {
+        const nextHour = (prev + 1) % 24;
+        const slot = preset.hourlyProfile24h[nextHour];
+        if (slot) {
+          setAmbientTempC(slot.ambientC);
+          setIrradianceWm2(slot.irradianceWm2);
+          setGridMEF(slot.mefGPerKWh);
+        }
+        return nextHour;
+      });
+    }, 950);
+    return () => clearInterval(timer);
+  }, [isPlaying24h, preset]);
+
+  function handleSelectHour(hour: number) {
+    setIsPlaying24h(false);
+    setActiveHour(hour);
+    const slot = preset.hourlyProfile24h[hour];
+    if (slot) {
+      setAmbientTempC(slot.ambientC);
+      setIrradianceWm2(slot.irradianceWm2);
+      setGridMEF(slot.mefGPerKWh);
+    }
+  }
+
   // Switch feeder preset handler
   function handleSelectFeeder(newId: FeederPresetId) {
     const p = FEEDER_PRESETS[newId];
+    setIsPlaying24h(false);
     setFeederId(newId);
+    setActiveHour(14);
     setAmbientTempC(p.defaultAmbientTempC);
     setIrradianceWm2(p.defaultIrradianceWm2);
     setGridMEF(p.defaultGridMEFGPerKWh);
@@ -82,6 +121,7 @@ export default function GridVaneCockpitPage() {
 
   // Live Open-Meteo API Sync
   async function handleFetchLiveWeather() {
+    setIsPlaying24h(false);
     setIsFetchingWeather(true);
     try {
       const res = await fetch(`/api/weather?feeder=${feederId}`);
@@ -212,6 +252,176 @@ export default function GridVaneCockpitPage() {
 
       {/* Main Content Container */}
       <main className="max-w-[1440px] mx-auto px-4 lg:px-6 pt-4 space-y-4">
+        {/* 6-Step Interactive Judge Guided Walkthrough Bar */}
+        <section className="bg-gradient-to-r from-emerald-950/40 via-slate-900/90 to-cyan-950/40 border border-emerald-500/30 rounded-xl p-3 shadow-lg">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                Interactive Judge Tour
+              </span>
+              <span className="text-xs font-semibold text-white">
+                Click any Hackathon Judging Criterion below to auto-configure the 33-Bus Feeder &amp; verify live proofs:
+              </span>
+            </div>
+            <span className="text-[11px] font-mono text-slate-400">
+              100% Real-Time Physics + NIST FIPS 204 + Compiled Solidity 0.8.28
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setFeederId("antalya_cop31");
+                setAmbientTempC(41.5);
+                setIrradianceWm2(920);
+                setScenarioId("ssp5_85");
+                setVppMode("GRIDVANE_THERMO_CARBON_VPP");
+                setAttackType("NONE");
+                setSpoofKW(0);
+                setSelectedBusId(18);
+                setActiveTab("THERMAL_C57");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "THERMAL_C57"
+                  ? "bg-amber-500/20 border-amber-500/50 text-amber-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-amber-400">
+                STEP 1 · CLIMATE (30%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                C57.91 + LME + TSRS
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                -68% Aging · +18.9% CO₂
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setAttackType("NONE");
+                setSpoofKW(0);
+                setVppMode("GRIDVANE_THERMO_CARBON_VPP");
+                setActiveTab("P3271_SILOS");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "P3271_SILOS"
+                  ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-emerald-400">
+                STEP 2 · DLT &amp; P3271 (30%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                Triple-Silo + EVM
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                solc 0.8.28 · 0 Double-Count
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setSelectedBusId(18);
+                setAttackType("SOLAR_EXPORT_INFLATION");
+                setSpoofKW(85);
+                setFirewallEnabled(true);
+                setActiveTab("KIRCHHOFF_PQC");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "KIRCHHOFF_PQC"
+                  ? "bg-rose-500/20 border-rose-500/50 text-rose-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-rose-400">
+                STEP 3 · SECURITY (10%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                FDIA + ML-DSA-65
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                +85kW Spoof Quarantined
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setAttackType("NONE");
+                setSpoofKW(0);
+                setSelectedBusId(18);
+                setActiveTab("DLR_SKYVISION_AGENTS");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "DLR_SKYVISION_AGENTS"
+                  ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-cyan-400">
+                STEP 4 · FEASIBILITY (10%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                IEEE 738 + SkyVision
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                5-Agent Pareto + Merkle
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setSelectedBusId(14);
+                setEquityGateEnabled(true);
+                setActiveTab("XAI_EQUITY");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "XAI_EQUITY"
+                  ? "bg-sky-500/20 border-sky-500/50 text-sky-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-sky-400">
+                STEP 5 · UX &amp; XAI (10%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                Shapley + Equity Gate
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                1,270 Vulnerable Protected
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsPlaying24h(false);
+                setActiveTab("GRIDBENCH_RUBRIC");
+              }}
+              className={`p-2 rounded-lg border text-left transition ${
+                activeTab === "GRIDBENCH_RUBRIC"
+                  ? "bg-violet-500/20 border-violet-500/50 text-violet-200"
+                  : "bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-700"
+              }`}
+            >
+              <div className="text-[10px] font-mono font-bold text-violet-400">
+                STEP 6 · SCALE (10%)
+              </div>
+              <div className="text-xs font-bold text-white truncate mt-0.5">
+                GridBench 720h Suite
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                4 Feeders · 12-Judge Matrix
+              </div>
+            </button>
+          </div>
+        </section>
+
         {/* Global Cyber-Physical Control & Scenario Bar */}
         <section className="bg-grid-panel border border-grid-border rounded-xl p-4 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
@@ -235,7 +445,10 @@ export default function GridVaneCockpitPage() {
                 max={48}
                 step={0.5}
                 value={ambientTempC}
-                onChange={(e) => setAmbientTempC(Number(e.target.value))}
+                onChange={(e) => {
+                  setIsPlaying24h(false);
+                  setAmbientTempC(Number(e.target.value));
+                }}
                 className="w-full accent-amber-500 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] font-mono text-slate-500">
@@ -257,16 +470,19 @@ export default function GridVaneCockpitPage() {
               </div>
               <input
                 type="range"
-                min={100}
+                min={0}
                 max={1050}
                 step={15}
                 value={irradianceWm2}
-                onChange={(e) => setIrradianceWm2(Number(e.target.value))}
+                onChange={(e) => {
+                  setIsPlaying24h(false);
+                  setIrradianceWm2(Number(e.target.value));
+                }}
                 className="w-full accent-cyan-400 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] font-mono text-slate-500">
-                <span>100 (Cloud)</span>
-                <span>600</span>
+                <span>0 (Night)</span>
+                <span>550</span>
                 <span>1050 W/m²</span>
               </div>
             </div>
@@ -478,6 +694,16 @@ export default function GridVaneCockpitPage() {
           </div>
         </section>
 
+        {/* Interactive 24-Hour Diurnal Replay Player & Multi-Curve Comparison Chart */}
+        <Diurnal24hChart
+          preset={preset}
+          scenarioId={scenarioId}
+          activeHour={activeHour}
+          isPlaying={isPlaying24h}
+          onTogglePlay={() => setIsPlaying24h((p) => !p)}
+          onSelectHour={handleSelectHour}
+        />
+
         {/* Interactive IEEE 33-Bus Radial Distribution Network Twin */}
         <FeederTopologyMap
           feederState={activeState}
@@ -486,66 +712,78 @@ export default function GridVaneCockpitPage() {
           nodeAudits={firewallReport.nodeAudits}
         />
 
-        {/* Deep-Dive Cockpit Module Tabs */}
+        {/* 6 Deep-Dive Cockpit Module Tabs */}
         <div className="flex flex-wrap items-center gap-2 border-b border-grid-border pb-2">
           <button
             onClick={() => setActiveTab("THERMAL_C57")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
               activeTab === "THERMAL_C57"
                 ? "bg-amber-500/20 text-amber-300 border border-amber-500/50"
                 : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
             }`}
           >
-            <Flame className="w-4 h-4" />
-            1. IEEE C57.91 Transformer Aging &amp; TSRS Risk
+            <Flame className="w-3.5 h-3.5" />
+            1. IEEE C57.91 Trafo &amp; TSRS Risk
+          </button>
+
+          <button
+            onClick={() => setActiveTab("DLR_SKYVISION_AGENTS")}
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
+              activeTab === "DLR_SKYVISION_AGENTS"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/50"
+                : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
+            }`}
+          >
+            <Wind className="w-3.5 h-3.5" />
+            2. IEEE 738 DLR, SkyVision &amp; 5-Agent Consensus
           </button>
 
           <button
             onClick={() => setActiveTab("KIRCHHOFF_PQC")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
               activeTab === "KIRCHHOFF_PQC"
                 ? "bg-rose-500/20 text-rose-300 border border-rose-500/50"
                 : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
             }`}
           >
-            <ShieldAlert className="w-4 h-4" />
-            2. Kirchhoff FDIA Firewall &amp; FIPS 204 ML-DSA-65 Lab
+            <ShieldAlert className="w-3.5 h-3.5" />
+            3. Kirchhoff Firewall &amp; FIPS 204 ML-DSA-65
           </button>
 
           <button
             onClick={() => setActiveTab("XAI_EQUITY")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
               activeTab === "XAI_EQUITY"
                 ? "bg-sky-500/20 text-sky-300 border border-sky-500/50"
                 : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
             }`}
           >
-            <BrainCircuit className="w-4 h-4" />
-            3. Explainable AI (XAI) &amp; Thermal-Equity Gate
+            <BrainCircuit className="w-3.5 h-3.5" />
+            4. Explainable AI (XAI) &amp; Equity Gate
           </button>
 
           <button
             onClick={() => setActiveTab("P3271_SILOS")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
               activeTab === "P3271_SILOS"
                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50"
                 : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
             }`}
           >
-            <Link2 className="w-4 h-4" />
-            4. IEEE P3271.01 Settlement &amp; Triple-Silo Registry
+            <Link2 className="w-3.5 h-3.5" />
+            5. IEEE P3271.01 &amp; Triple-Silo Registry
           </button>
 
           <button
             onClick={() => setActiveTab("GRIDBENCH_RUBRIC")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-2 ${
+            className={`px-3 py-2 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 ${
               activeTab === "GRIDBENCH_RUBRIC"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/50"
+                ? "bg-violet-500/20 text-violet-300 border border-violet-500/50"
                 : "bg-grid-panel text-slate-400 border border-grid-border hover:text-slate-200"
             }`}
           >
-            <BarChart3 className="w-4 h-4" />
-            5. GridBench 720h Benchmark &amp; Judge Matrix
+            <BarChart3 className="w-3.5 h-3.5" />
+            6. GridBench 720h &amp; Judge Matrix
           </button>
         </div>
 
@@ -554,6 +792,16 @@ export default function GridVaneCockpitPage() {
           {activeTab === "THERMAL_C57" && (
             <TransformerThermalPanel
               vppResult={vppResult}
+              onSelectBus={setSelectedBusId}
+            />
+          )}
+
+          {activeTab === "DLR_SKYVISION_AGENTS" && (
+            <DLRAndMultiAgentPanel
+              feederState={activeState}
+              vppResult={vppResult}
+              firewallReport={firewallReport}
+              selectedBusId={selectedBusId}
               onSelectBus={setSelectedBusId}
             />
           )}

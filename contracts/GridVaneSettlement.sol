@@ -13,7 +13,7 @@ pragma solidity ^0.8.24;
  */
 contract GridVaneSettlement {
     // =========================================================================
-    // Constants & Errors
+    // Constants & Custom Errors
     // =========================================================================
 
     /// @notice Maximum allowed Kirchhoff AC branch active power residual in Watts (2.5 kW = 2500 W)
@@ -58,21 +58,35 @@ contract GridVaneSettlement {
         bool active;
     }
 
+    struct EpochSettlementInput {
+        bytes32 channelId;
+        bytes32 batchId;
+        uint256 epochNumber;
+        uint256 verifiedCleanWh;
+        uint256 locationalMarginalEmissionsMgPerWh; // LME_{i,t} in mgCO2e/Wh (= gCO2e/kWh)
+        uint256 maxTransformerHotSpotDeciC;         // IEEE Std C57.91 Theta_H (e.g., 1045 = 104.5 C)
+        uint256 kirchhoffMaxResidualWatts;          // Max nodal DistFlow residual in Watts
+        uint256 transformerAalSavedCents;
+        bytes32 mlDsa65BatchRoot;                   // NIST FIPS 204 ML-DSA-65 signature Merkle root
+        bytes32 ppPqbPrivacyCommitmentRoot;         // PP-PQB blinded household load range commitment root
+        bool thermalEquityProtected;                // True if vulnerable cooling shelters had 0 W curtailment
+    }
+
     struct CertificateBatch {
         bytes32 batchId;
         bytes32 channelId;
         uint256 epochNumber;
         uint256 verifiedCleanWh;
-        uint256 locationalMarginalEmissionsMgPerWh; // LME_{i,t} in mgCO2e/Wh (= gCO2e/kWh)
+        uint256 locationalMarginalEmissionsMgPerWh;
         uint256 verifiedAvoidedGramsCO2e;
-        uint256 maxTransformerHotSpotDeciC;         // IEEE Std C57.91 Theta_H (e.g., 1042 = 104.2 C)
-        uint256 kirchhoffMaxResidualWatts;          // Max nodal DistFlow residual in Watts
-        bytes32 mlDsa65BatchRoot;                   // NIST FIPS 204 ML-DSA-65 signature Merkle root
-        bytes32 ppPqbPrivacyCommitmentRoot;         // PP-PQB blinded household load range commitment root
-        bool thermalEquityProtected;                // True if vulnerable cooling shelters had 0 W curtailment
-        SiloRegime lockedRegime;                    // Triple-Silo atomic lock state
+        uint256 maxTransformerHotSpotDeciC;
+        uint256 kirchhoffMaxResidualWatts;
+        bytes32 mlDsa65BatchRoot;
+        bytes32 ppPqbPrivacyCommitmentRoot;
+        bool thermalEquityProtected;
+        SiloRegime lockedRegime;
         address claimedBy;
-        string externalRegistryReference;           // e.g., "CBAM-2026-TR-884" or "VCS-2026-TR-0901"
+        string externalRegistryReference;
         uint256 claimedTimestamp;
     }
 
@@ -82,7 +96,7 @@ contract GridVaneSettlement {
 
     address public immutable governanceAdmin;
     mapping(bytes32 => RecurringChannel) public channels;
-    mapping(bytes32 => CertificateBatch) public batches;
+    mapping(bytes32 => CertificateBatch) private _batches;
     bytes32[] public allBatchIds;
 
     // =========================================================================
@@ -173,83 +187,78 @@ contract GridVaneSettlement {
      * @notice Settles a recurring IEEE P3271.01 epoch after verifying Kirchhoff physics residuals,
      *         NIST FIPS 204 ML-DSA-65 lattice signature roots, and Thermal-Equity safety compliance.
      */
-    function settleRecurringEpoch(
-        bytes32 channelId,
-        bytes32 batchId,
-        uint256 epochNumber,
-        uint256 verifiedCleanWh,
-        uint256 locationalMarginalEmissionsMgPerWh,
-        uint256 maxTransformerHotSpotDeciC,
-        uint256 kirchhoffMaxResidualWatts,
-        uint256 transformerAalSavedCents,
-        bytes32 mlDsa65BatchRoot,
-        bytes32 ppPqbPrivacyCommitmentRoot,
-        bool thermalEquityProtected
-    ) external {
-        RecurringChannel storage ch = channels[channelId];
-        if (!ch.active) revert ChannelNotActive(channelId);
+    function settleRecurringEpoch(EpochSettlementInput calldata input) external {
+        RecurringChannel storage ch = channels[input.channelId];
+        if (!ch.active) revert ChannelNotActive(input.channelId);
 
         address authorizedOracle = ch.failoverActive ? ch.backupFailoverOracle : ch.primaryPqcOracle;
         if (msg.sender != authorizedOracle && msg.sender != ch.dsoAuthority) {
             revert UnauthorizedOracle(msg.sender);
         }
 
-        if (epochNumber != ch.currentEpoch + 1) {
-            revert InvalidEpochSequence(ch.currentEpoch + 1, epochNumber);
+        if (input.epochNumber != ch.currentEpoch + 1) {
+            revert InvalidEpochSequence(ch.currentEpoch + 1, input.epochNumber);
         }
 
         // Gate 1: Kirchhoff AC Power-Flow Residual Firewall
-        if (kirchhoffMaxResidualWatts > MAX_KIRCHHOFF_RESIDUAL_WATTS) {
-            revert KirchhoffPhysicsViolation(kirchhoffMaxResidualWatts, MAX_KIRCHHOFF_RESIDUAL_WATTS);
+        if (input.kirchhoffMaxResidualWatts > MAX_KIRCHHOFF_RESIDUAL_WATTS) {
+            revert KirchhoffPhysicsViolation(
+                input.kirchhoffMaxResidualWatts,
+                MAX_KIRCHHOFF_RESIDUAL_WATTS
+            );
         }
 
         // Gate 2: Post-Quantum ML-DSA-65 + PP-PQB Commitment Verification
-        if (mlDsa65BatchRoot == bytes32(0) || ppPqbPrivacyCommitmentRoot == bytes32(0)) {
+        if (
+            input.mlDsa65BatchRoot == bytes32(0) ||
+            input.ppPqbPrivacyCommitmentRoot == bytes32(0)
+        ) {
             revert MissingPostQuantumAttestation();
         }
 
         // Gate 3: Responsible AI Thermal-Equity Safety Gate
-        if (!thermalEquityProtected) {
-            revert ThermalEquitySafetyViolation(channelId);
+        if (!input.thermalEquityProtected) {
+            revert ThermalEquitySafetyViolation(input.channelId);
         }
 
         // Compute physics-verified avoided emissions using Locational Marginal Emissions (LME_{i,t})
-        uint256 avoidedGramsCO2e = (verifiedCleanWh * locationalMarginalEmissionsMgPerWh) / 1000;
+        uint256 avoidedGramsCO2e = (input.verifiedCleanWh *
+            input.locationalMarginalEmissionsMgPerWh) / 1000;
 
-        ch.currentEpoch = epochNumber;
+        ch.currentEpoch = input.epochNumber;
         ch.lastSettledTimestamp = block.timestamp;
-        ch.cumulativeCleanWh += verifiedCleanWh;
+        ch.cumulativeCleanWh += input.verifiedCleanWh;
         ch.cumulativeAvoidedGramsCO2e += avoidedGramsCO2e;
-        ch.cumulativeTransformerAalSavedCents += transformerAalSavedCents;
+        ch.cumulativeTransformerAalSavedCents += input.transformerAalSavedCents;
 
-        batches[batchId] = CertificateBatch({
-            batchId: batchId,
-            channelId: channelId,
-            epochNumber: epochNumber,
-            verifiedCleanWh: verifiedCleanWh,
-            locationalMarginalEmissionsMgPerWh: locationalMarginalEmissionsMgPerWh,
+        _batches[input.batchId] = CertificateBatch({
+            batchId: input.batchId,
+            channelId: input.channelId,
+            epochNumber: input.epochNumber,
+            verifiedCleanWh: input.verifiedCleanWh,
+            locationalMarginalEmissionsMgPerWh: input.locationalMarginalEmissionsMgPerWh,
             verifiedAvoidedGramsCO2e: avoidedGramsCO2e,
-            maxTransformerHotSpotDeciC: maxTransformerHotSpotDeciC,
-            kirchhoffMaxResidualWatts: kirchhoffMaxResidualWatts,
-            mlDsa65BatchRoot: mlDsa65BatchRoot,
-            ppPqbPrivacyCommitmentRoot: ppPqbPrivacyCommitmentRoot,
-            thermalEquityProtected: thermalEquityProtected,
+            maxTransformerHotSpotDeciC: input.maxTransformerHotSpotDeciC,
+            kirchhoffMaxResidualWatts: input.kirchhoffMaxResidualWatts,
+            mlDsa65BatchRoot: input.mlDsa65BatchRoot,
+            ppPqbPrivacyCommitmentRoot: input.ppPqbPrivacyCommitmentRoot,
+            thermalEquityProtected: input.thermalEquityProtected,
             lockedRegime: SiloRegime.UNCLAIMED,
             claimedBy: address(0),
             externalRegistryReference: "",
             claimedTimestamp: 0
         });
 
-        allBatchIds.push(batchId);
+        allBatchIds.push(input.batchId);
 
         emit RecurringEpochSettled(
-            channelId,
-            batchId,
-            epochNumber,
-            verifiedCleanWh,
+            input.channelId,
+            input.batchId,
+            input.epochNumber,
+            input.verifiedCleanWh,
             avoidedGramsCO2e,
-            kirchhoffMaxResidualWatts,
-            mlDsa65BatchRoot
+            input.kirchhoffMaxResidualWatts,
+            input.mlDsa65BatchRoot
         );
     }
 
@@ -288,7 +297,7 @@ contract GridVaneSettlement {
     ) external {
         if (targetRegime == SiloRegime.UNCLAIMED) revert InvalidTargetRegime();
 
-        CertificateBatch storage batch = batches[batchId];
+        CertificateBatch storage batch = _batches[batchId];
         require(batch.verifiedCleanWh > 0, "Batch does not exist");
 
         if (batch.lockedRegime != SiloRegime.UNCLAIMED) {
@@ -309,6 +318,10 @@ contract GridVaneSettlement {
             externalRegistryReference,
             correspondingAdjustmentApplied
         );
+    }
+
+    function getBatch(bytes32 batchId) external view returns (CertificateBatch memory) {
+        return _batches[batchId];
     }
 
     function totalBatchesCount() external view returns (uint256) {
