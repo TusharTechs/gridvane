@@ -310,7 +310,7 @@ export default function GridVaneCockpitPage() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/35 flex items-center gap-1">
-                    <Compass className="w-3 h-3" /> Interactive Judge Evaluation Deck
+                    <Compass className="w-3 h-3" /> Interactive Cyber-Physical Scenario Deck
                   </span>
                   <span className="text-xs font-mono text-emerald-300 font-semibold flex items-center gap-1">
                     <MapPin className="w-3 h-3" /> {preset.name} ({preset.country})
@@ -320,7 +320,7 @@ export default function GridVaneCockpitPage() {
                   Physics-Verified, Quantum-Safe Thermo-Carbon VPP &amp; Triple-Silo Climate Ledger
                 </h2>
                 <p className="text-xs text-slate-300 mt-0.5 max-w-4xl">
-                  Select any of the <strong>6 IEEE ClimateChain Judging Criteria</strong> below to auto-configure the 33-bus AC distribution feeder and inspect live mathematical, cryptographic, and smart-contract proofs:
+                  Select any of the <strong>6 Cyber-Physical Verification Scenarios</strong> below to auto-configure the 33-bus AC distribution feeder and inspect live mathematical, cryptographic, and smart-contract proofs:
                 </p>
               </div>
             </div>
@@ -511,7 +511,7 @@ export default function GridVaneCockpitPage() {
                 GridBench 720h Suite
               </div>
               <div className="text-[10px] font-mono text-slate-400 mt-0.5 truncate">
-                4 Feeders · 12-Judge Matrix
+                4 Feeders · IEEE Standards
               </div>
             </button>
           </div>
@@ -971,7 +971,7 @@ export default function GridVaneCockpitPage() {
             }`}
           >
             <BarChart3 className="w-4 h-4 text-violet-400" />
-            <span>6. GridBench 720h &amp; Judge Matrix</span>
+            <span>6. GridBench 720h &amp; IEEE Standards</span>
           </button>
         </div>
 
