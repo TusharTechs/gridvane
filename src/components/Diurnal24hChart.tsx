@@ -13,6 +13,7 @@ interface Diurnal24hChartProps {
   isPlaying: boolean;
   onTogglePlay: () => void;
   onSelectHour: (hour: number) => void;
+  isLightMode?: boolean;
 }
 
 export function Diurnal24hChart({
@@ -22,6 +23,7 @@ export function Diurnal24hChart({
   isPlaying,
   onTogglePlay,
   onSelectHour,
+  isLightMode = true,
 }: Diurnal24hChartProps) {
   const [chartMetric, setChartMetric] = useState<"HOTSPOT_C" | "EMISSIONS_KG">("HOTSPOT_C");
 
@@ -107,10 +109,10 @@ export function Diurnal24hChart({
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={onTogglePlay}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border flex items-center gap-2 transition-all shadow-md ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border flex items-center gap-2 transition-all ${
               isPlaying
-                ? "bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-glow-amber"
-                : "bg-gradient-to-r from-emerald-500/25 to-cyan-500/20 hover:from-emerald-500/35 hover:to-cyan-500/30 text-emerald-200 border-emerald-400/50 shadow-glow-emerald"
+                ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                : "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/40"
             }`}
           >
             {isPlaying ? (
@@ -124,15 +126,15 @@ export function Diurnal24hChart({
             )}
           </button>
 
-          <div className="px-3 py-1.5 rounded-xl bg-[#040915]/90 border border-slate-800 text-xs font-mono text-slate-300 flex items-center gap-2">
+          <div className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-300 flex items-center gap-2">
             <Clock className="w-3.5 h-3.5 text-cyan-400" />
             <span>
               Epoch Hour:{" "}
               <strong className="text-white">
                 {String(activeHour).padStart(2, "0")}:00
               </strong>{" "}
-              <span className="text-amber-300">{currentSlot.ambientC}°C</span> ·{" "}
-              <span className="text-cyan-300">{currentSlot.irradianceWm2} W/m²</span>
+              <span className="text-amber-300 font-bold">{currentSlot.ambientC}°C</span> ·{" "}
+              <span className="text-cyan-300 font-bold">{currentSlot.irradianceWm2} W/m²</span>
             </span>
           </div>
         </div>
@@ -140,7 +142,7 @@ export function Diurnal24hChart({
         <div className="flex flex-wrap items-center gap-3">
           <div className="hidden sm:flex items-center gap-3.5 text-[11px] font-mono">
             <span className="flex items-center gap-1.5 text-rose-400">
-              <span className="w-3 h-0.5 bg-rose-500 inline-block rounded" /> Baseline:{" "}
+              <span className="w-3 h-0.5 bg-rose-600 inline-block rounded" /> Baseline:{" "}
               <strong>
                 {chartMetric === "HOTSPOT_C"
                   ? `${currentSlot.baseHotSpotC}°C`
@@ -148,7 +150,7 @@ export function Diurnal24hChart({
               </strong>
             </span>
             <span className="flex items-center gap-1.5 text-amber-300">
-              <span className="w-3 h-0.5 bg-amber-400 inline-block rounded" /> Naive VPP:{" "}
+              <span className="w-3 h-0.5 bg-amber-500 inline-block rounded" /> Naive VPP:{" "}
               <strong>
                 {chartMetric === "HOTSPOT_C"
                   ? `${currentSlot.naiveHotSpotC}°C`
@@ -156,7 +158,7 @@ export function Diurnal24hChart({
               </strong>
             </span>
             <span className="flex items-center gap-1.5 text-emerald-300 font-bold">
-              <span className="w-3 h-1 bg-emerald-400 inline-block rounded" /> GridVane:{" "}
+              <span className="w-3 h-1 bg-emerald-500 inline-block rounded" /> GridVane:{" "}
               <strong>
                 {chartMetric === "HOTSPOT_C"
                   ? `${currentSlot.gvHotSpotC}°C`
@@ -165,12 +167,12 @@ export function Diurnal24hChart({
             </span>
           </div>
 
-          <div className="flex items-center gap-1 bg-[#040915] p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
+          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
             <button
               onClick={() => setChartMetric("HOTSPOT_C")}
-              className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-semibold transition ${
+              className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-bold transition ${
                 chartMetric === "HOTSPOT_C"
-                  ? "bg-amber-500/20 text-amber-200 border border-amber-500/40"
+                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
@@ -178,9 +180,9 @@ export function Diurnal24hChart({
             </button>
             <button
               onClick={() => setChartMetric("EMISSIONS_KG")}
-              className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-semibold transition ${
+              className={`px-2.5 py-1 rounded-lg flex items-center gap-1 font-bold transition ${
                 chartMetric === "EMISSIONS_KG"
-                  ? "bg-emerald-500/20 text-emerald-200 border border-emerald-500/40"
+                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
@@ -191,16 +193,22 @@ export function Diurnal24hChart({
       </div>
 
       {/* Interactive SVG 24-Hour Diurnal Curve */}
-      <div className="bg-[#030711] border border-cyan-500/15 rounded-xl p-2 overflow-x-auto">
+      <div
+        className={`border rounded-xl p-2 overflow-x-auto ${
+          isLightMode
+            ? "bg-[#F8FAFD] border-[#CBD5E1]"
+            : "bg-[#030711] border-cyan-500/15"
+        }`}
+      >
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto min-w-[660px]">
           <defs>
             <linearGradient id="gvAreaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10B981" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#059669" stopOpacity={isLightMode ? "0.22" : "0.28"} />
+              <stop offset="100%" stopColor="#059669" stopOpacity="0.0" />
             </linearGradient>
             <linearGradient id="baseAreaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F43F5E" stopOpacity="0.14" />
-              <stop offset="100%" stopColor="#F43F5E" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#E11D48" stopOpacity={isLightMode ? "0.10" : "0.14"} />
+              <stop offset="100%" stopColor="#E11D48" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -212,15 +220,15 @@ export function Diurnal24hChart({
                 y1={yOf(110)}
                 x2={width - padRight}
                 y2={yOf(110)}
-                stroke="#F43F5E"
-                strokeWidth="1.2"
+                stroke="#E11D48"
+                strokeWidth="1.4"
                 strokeDasharray="5 4"
               />
               <text
                 x={width - padRight - 6}
                 y={yOf(110) - 5}
                 textAnchor="end"
-                fill="#FDA4AF"
+                fill={isLightMode ? "#BE123C" : "#FDA4AF"}
                 fontSize="9.5"
                 fontFamily="monospace"
                 fontWeight="700"
@@ -241,16 +249,17 @@ export function Diurnal24hChart({
                   y1={y}
                   x2={width - padRight}
                   y2={y}
-                  stroke="#0F1D36"
+                  stroke={isLightMode ? "#E2E8F0" : "#0F1D36"}
                   strokeWidth="1"
                 />
                 <text
                   x={padLeft - 8}
                   y={y + 3}
                   textAnchor="end"
-                  fill="#64748B"
+                  fill={isLightMode ? "#475569" : "#64748B"}
                   fontSize="9.5"
                   fontFamily="monospace"
+                  fontWeight="600"
                 >
                   {chartMetric === "HOTSPOT_C" ? `${Math.round(val)}°C` : `${Math.round(val)}kg`}
                 </text>
@@ -262,15 +271,15 @@ export function Diurnal24hChart({
           <path d={baseAreaPath} fill="url(#baseAreaGrad)" />
           <path d={gvAreaPath} fill="url(#gvAreaGrad)" />
 
-          <path d={basePath} fill="none" stroke="#F43F5E" strokeWidth="2.2" strokeOpacity="0.9" />
+          <path d={basePath} fill="none" stroke="#E11D48" strokeWidth="2.2" strokeOpacity="0.9" />
           <path
             d={naivePath}
             fill="none"
-            stroke="#F59E0B"
+            stroke="#D97706"
             strokeWidth="2"
             strokeDasharray="5 3"
           />
-          <path d={gvPath} fill="none" stroke="#10B981" strokeWidth="3.2" />
+          <path d={gvPath} fill="none" stroke="#059669" strokeWidth="3.2" />
 
           {/* Active Hour Vertical Scrubber & Interactive Click Columns */}
           {hourlySeries.map((d) => {
@@ -299,22 +308,22 @@ export function Diurnal24hChart({
                       y1={padTop}
                       x2={x}
                       y2={padTop + plotH}
-                      stroke="#22D3EE"
+                      stroke="#00629B"
                       strokeWidth="1.8"
                     />
                     <circle
                       cx={x}
                       cy={yOf(baseVal)}
                       r="4.5"
-                      fill="#F43F5E"
+                      fill="#E11D48"
                       stroke="#FFFFFF"
-                      strokeWidth="1.4"
+                      strokeWidth="1.6"
                     />
                     <circle
                       cx={x}
                       cy={yOf(gvVal)}
                       r="5.5"
-                      fill="#10B981"
+                      fill="#059669"
                       stroke="#FFFFFF"
                       strokeWidth="1.8"
                     />
@@ -325,10 +334,10 @@ export function Diurnal24hChart({
                     x={x}
                     y={height - 7}
                     textAnchor="middle"
-                    fill={isCurr ? "#22D3EE" : "#64748B"}
+                    fill={isCurr ? "#00629B" : "#475569"}
                     fontSize="9.5"
                     fontFamily="monospace"
-                    fontWeight={isCurr ? "800" : "500"}
+                    fontWeight={isCurr ? "800" : "600"}
                   >
                     {String(d.hour).padStart(2, "0")}:00
                   </text>

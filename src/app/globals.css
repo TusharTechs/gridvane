@@ -3,10 +3,201 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light;
+}
+
+html.dark {
   color-scheme: dark;
 }
 
-body {
+/* ============================================================================
+   DEFAULT THEME: IEEE & UN COP31 EXECUTIVE DAYLIGHT STUDIO (html.theme-ieee-light)
+   Designed for IEEE ClimateChain Judges: IEEE Royal Blue (#00629B),
+   Climate Emerald (#059669), Crisp Alabaster Paper (#F4F7FB), & Pure White Cards
+   ============================================================================ */
+html.theme-ieee-light body {
+  background-color: #f3f7fb;
+  background-image:
+    radial-gradient(ellipse 80% 45% at 15% -10%, rgba(0, 98, 155, 0.09), transparent 60%),
+    radial-gradient(ellipse 70% 40% at 85% -5%, rgba(5, 150, 105, 0.09), transparent 55%),
+    linear-gradient(to right, rgba(0, 98, 155, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 98, 155, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+  background-attachment: fixed;
+  color: #0f172a;
+}
+
+html.theme-ieee-light .gv-glass-card,
+html.theme-ieee-light .bg-grid-panel {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid #d5e1ef !important;
+  box-shadow:
+    0 10px 28px -8px rgba(15, 23, 42, 0.07),
+    0 2px 6px -1px rgba(0, 98, 155, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+html.theme-ieee-light .gv-glass-card:hover {
+  border-color: #93c5fd !important;
+  box-shadow:
+    0 14px 34px -8px rgba(0, 98, 155, 0.12),
+    0 4px 10px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Harmonize recessed dark containers into crisp IEEE Ice-Slate surfaces */
+html.theme-ieee-light .bg-slate-950,
+html.theme-ieee-light .bg-slate-950\/95,
+html.theme-ieee-light .bg-slate-950\/90,
+html.theme-ieee-light .bg-slate-950\/85,
+html.theme-ieee-light .bg-slate-950\/80,
+html.theme-ieee-light .bg-slate-950\/70,
+html.theme-ieee-light .bg-slate-950\/60,
+html.theme-ieee-light .bg-\[\#050912\],
+html.theme-ieee-light .bg-\[\#030711\],
+html.theme-ieee-light .bg-\[\#040915\],
+html.theme-ieee-light .bg-\[\#040915\]\/90,
+html.theme-ieee-light .bg-\[\#050B18\],
+html.theme-ieee-light .bg-\[\#050C1A\]\/95,
+html.theme-ieee-light .bg-\[\#060D1B\]\/90,
+html.theme-ieee-light .bg-\[\#060E1F\] {
+  background-color: #f6f9fc !important;
+  border-color: #d8e3f0 !important;
+}
+
+html.theme-ieee-light .bg-slate-900,
+html.theme-ieee-light .bg-slate-900\/90,
+html.theme-ieee-light .bg-slate-900\/80,
+html.theme-ieee-light .bg-slate-900\/70,
+html.theme-ieee-light .bg-slate-900\/60 {
+  background-color: #edf3f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.theme-ieee-light .border-slate-800,
+html.theme-ieee-light .border-slate-800\/90,
+html.theme-ieee-light .border-slate-800\/80,
+html.theme-ieee-light .border-slate-800\/60,
+html.theme-ieee-light .border-slate-700,
+html.theme-ieee-light .border-grid-border {
+  border-color: #dbe4f0 !important;
+}
+
+/* Harmonize Typography for High-Contrast Daylight Legibility */
+html.theme-ieee-light .text-white,
+html.theme-ieee-light .text-slate-100 {
+  color: #0a192f !important;
+}
+
+html.theme-ieee-light .text-slate-200,
+html.theme-ieee-light .text-slate-300 {
+  color: #1e293b !important;
+}
+
+html.theme-ieee-light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.theme-ieee-light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* High-Contrast Semantic Accent Colors for Daylight */
+html.theme-ieee-light .text-emerald-300,
+html.theme-ieee-light .text-emerald-400,
+html.theme-ieee-light .text-emerald-200 {
+  color: #047857 !important;
+}
+
+html.theme-ieee-light .text-cyan-300,
+html.theme-ieee-light .text-cyan-400,
+html.theme-ieee-light .text-cyan-200 {
+  color: #00629b !important;
+}
+
+html.theme-ieee-light .text-sky-300,
+html.theme-ieee-light .text-sky-400,
+html.theme-ieee-light .text-sky-200 {
+  color: #0369a1 !important;
+}
+
+html.theme-ieee-light .text-amber-300,
+html.theme-ieee-light .text-amber-400,
+html.theme-ieee-light .text-amber-200 {
+  color: #b45309 !important;
+}
+
+html.theme-ieee-light .text-rose-300,
+html.theme-ieee-light .text-rose-400,
+html.theme-ieee-light .text-rose-200 {
+  color: #be123c !important;
+}
+
+html.theme-ieee-light .text-violet-300,
+html.theme-ieee-light .text-violet-400,
+html.theme-ieee-light .text-violet-200 {
+  color: #5b21b6 !important;
+}
+
+/* Tinted Alert & Status Containers in Daylight */
+html.theme-ieee-light .bg-emerald-950\/20,
+html.theme-ieee-light .bg-emerald-950\/15,
+html.theme-ieee-light .bg-emerald-950\/10,
+html.theme-ieee-light .bg-emerald-500\/20,
+html.theme-ieee-light .bg-emerald-500\/15,
+html.theme-ieee-light .bg-emerald-500\/10 {
+  background-color: rgba(16, 185, 129, 0.11) !important;
+  border-color: rgba(5, 150, 105, 0.35) !important;
+}
+
+html.theme-ieee-light .bg-cyan-950\/20,
+html.theme-ieee-light .bg-cyan-500\/20,
+html.theme-ieee-light .bg-cyan-500\/15,
+html.theme-ieee-light .bg-cyan-500\/10 {
+  background-color: rgba(0, 98, 155, 0.10) !important;
+  border-color: rgba(0, 98, 155, 0.35) !important;
+}
+
+html.theme-ieee-light .bg-amber-950\/20,
+html.theme-ieee-light .bg-amber-950\/15,
+html.theme-ieee-light .bg-amber-500\/20,
+html.theme-ieee-light .bg-amber-500\/15,
+html.theme-ieee-light .bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(217, 119, 6, 0.38) !important;
+}
+
+html.theme-ieee-light .bg-rose-950\/30,
+html.theme-ieee-light .bg-rose-950\/25,
+html.theme-ieee-light .bg-rose-950\/20,
+html.theme-ieee-light .bg-rose-950\/15,
+html.theme-ieee-light .bg-rose-500\/25,
+html.theme-ieee-light .bg-rose-500\/20,
+html.theme-ieee-light .bg-rose-500\/15 {
+  background-color: rgba(244, 63, 94, 0.10) !important;
+  border-color: rgba(225, 29, 72, 0.35) !important;
+}
+
+html.theme-ieee-light .bg-violet-950\/20,
+html.theme-ieee-light .bg-violet-500\/20,
+html.theme-ieee-light .bg-violet-500\/15 {
+  background-color: rgba(124, 58, 237, 0.10) !important;
+  border-color: rgba(109, 40, 217, 0.32) !important;
+}
+
+html.theme-ieee-light .bg-sky-950\/20,
+html.theme-ieee-light .bg-sky-950\/15,
+html.theme-ieee-light .bg-sky-500\/20,
+html.theme-ieee-light .bg-sky-500\/15 {
+  background-color: rgba(2, 132, 199, 0.10) !important;
+  border-color: rgba(2, 132, 199, 0.35) !important;
+}
+
+/* ============================================================================
+   ALTERNATE THEME: SCADA DARK OPS (html.dark)
+   ============================================================================ */
+html.dark body {
   background-color: #040812;
   background-image:
     radial-gradient(ellipse 80% 50% at 15% -10%, rgba(16, 185, 129, 0.14), transparent 60%),
@@ -17,11 +208,9 @@ body {
   background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
   background-attachment: fixed;
   color: #f8fafc;
-  overflow-x: hidden;
 }
 
-/* Glassmorphic Panel & Card Primitives */
-.bg-grid-panel {
+html.dark .bg-grid-panel {
   background: linear-gradient(165deg, rgba(13, 23, 44, 0.88) 0%, rgba(7, 13, 27, 0.94) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -30,7 +219,7 @@ body {
     inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 }
 
-.gv-glass-card {
+html.dark .gv-glass-card {
   background: linear-gradient(155deg, rgba(15, 26, 50, 0.85) 0%, rgba(7, 13, 26, 0.92) 100%);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(56, 189, 248, 0.16);
@@ -38,11 +227,6 @@ body {
     0 14px 34px -10px rgba(0, 0, 0, 0.7),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.gv-glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.34);
-  transform: translateY(-1px);
 }
 
 /* Animated Electron Flow for 33-Bus Feeder Branches */
@@ -90,44 +274,45 @@ input[type="range"] {
   appearance: none;
   height: 6px;
   border-radius: 999px;
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(71, 85, 105, 0.45);
+  background: rgba(148, 163, 184, 0.35);
+  border: 1px solid rgba(100, 116, 139, 0.35);
   outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
-  background: #f8fafc;
-  border: 2.5px solid #06b6d4;
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+  background: #ffffff;
+  border: 3px solid #00629b;
+  box-shadow: 0 2px 8px rgba(0, 98, 155, 0.45);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.18);
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.95);
+  border-color: #059669;
+  box-shadow: 0 0 14px rgba(5, 150, 105, 0.65);
 }
 
-/* Custom sleek scrollbars for SCADA tables */
+/* Custom sleek scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #040812;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: rgba(100, 116, 139, 0.4);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgba(100, 116, 139, 0.65);
 }

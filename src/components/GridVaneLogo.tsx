@@ -6,6 +6,7 @@ import { X, Sparkles, ShieldCheck, Wind, Flame, Cpu } from "lucide-react";
 interface GridVaneLogoProps {
   size?: "sm" | "md" | "lg";
   interactiveModal?: boolean;
+  isLightMode?: boolean;
 }
 
 export function GridVaneEmblemSVG({ className = "w-11 h-11" }: { className?: string }) {
@@ -26,12 +27,12 @@ export function GridVaneEmblemSVG({ className = "w-11 h-11" }: { className?: str
         <linearGradient id="gvHexOuter" x1="20" y1="10" x2="180" y2="190" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#22D3EE" />
           <stop offset="50%" stopColor="#10B981" />
-          <stop offset="100%" stopColor="#0284C7" />
+          <stop offset="100%" stopColor="#00629B" />
         </linearGradient>
         <linearGradient id="gvBladeCyan" x1="50" y1="20" x2="150" y2="160" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#67E8F9" />
-          <stop offset="55%" stopColor="#06B6D4" />
-          <stop offset="100%" stopColor="#0E7490" />
+          <stop offset="55%" stopColor="#0284C7" />
+          <stop offset="100%" stopColor="#00629B" />
         </linearGradient>
         <linearGradient id="gvBladeEmerald" x1="30" y1="40" x2="160" y2="150" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#6EE7B7" />
@@ -48,23 +49,23 @@ export function GridVaneEmblemSVG({ className = "w-11 h-11" }: { className?: str
       {/* Post-Quantum Hexagonal Lattice Outer Truss */}
       <polygon
         points="100,8 180,54 180,146 100,192 20,146 20,54"
-        fill="#050D1D"
+        fill="#051329"
         stroke="url(#gvHexOuter)"
-        strokeWidth="4"
+        strokeWidth="4.5"
       />
       {/* Lattice Truss Corner Bracing */}
-      <line x1="100" y1="8" x2="100" y2="26" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.8" />
+      <line x1="100" y1="8" x2="100" y2="26" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.85" />
       <line x1="72" y1="24" x2="100" y2="26" stroke="#22D3EE" strokeWidth="1.4" strokeOpacity="0.55" />
       <line x1="128" y1="24" x2="100" y2="26" stroke="#22D3EE" strokeWidth="1.4" strokeOpacity="0.55" />
 
-      <line x1="180" y1="54" x2="164" y2="63" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.8" />
-      <line x1="180" y1="146" x2="164" y2="137" stroke="#10B981" strokeWidth="2" strokeOpacity="0.8" />
-      <line x1="100" y1="192" x2="100" y2="174" stroke="#10B981" strokeWidth="2" strokeOpacity="0.8" />
-      <line x1="20" y1="146" x2="36" y2="137" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.8" />
-      <line x1="20" y1="54" x2="36" y2="63" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.8" />
+      <line x1="180" y1="54" x2="164" y2="63" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.85" />
+      <line x1="180" y1="146" x2="164" y2="137" stroke="#10B981" strokeWidth="2" strokeOpacity="0.85" />
+      <line x1="100" y1="192" x2="100" y2="174" stroke="#10B981" strokeWidth="2" strokeOpacity="0.85" />
+      <line x1="20" y1="146" x2="36" y2="137" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.85" />
+      <line x1="20" y1="54" x2="36" y2="63" stroke="#22D3EE" strokeWidth="2" strokeOpacity="0.85" />
 
       {/* Outer Azimuth Containment Ring */}
-      <circle cx="100" cy="100" r="74" fill="#040A17" stroke="url(#gvHexOuter)" strokeWidth="4.5" />
+      <circle cx="100" cy="100" r="74" fill="#040D1F" stroke="url(#gvHexOuter)" strokeWidth="4.5" />
       <circle
         cx="100"
         cy="100"
@@ -72,7 +73,7 @@ export function GridVaneEmblemSVG({ className = "w-11 h-11" }: { className?: str
         fill="none"
         stroke="#10B981"
         strokeWidth="1.5"
-        strokeOpacity="0.5"
+        strokeOpacity="0.55"
         strokeDasharray="6 4"
       />
 
@@ -140,6 +141,7 @@ export function GridVaneEmblemSVG({ className = "w-11 h-11" }: { className?: str
 export function GridVaneLogo({
   size = "md",
   interactiveModal = true,
+  isLightMode = true,
 }: GridVaneLogoProps) {
   const [showModal, setShowModal] = useState(false);
 
@@ -161,8 +163,8 @@ export function GridVaneLogo({
       >
         {/* Dual-Layer Glowing Emblem Container */}
         <div className="relative flex items-center justify-center">
-          <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-r from-emerald-500/40 via-cyan-500/40 to-amber-500/30 blur-md opacity-75 group-hover:opacity-100 transition duration-500" />
-          <div className="relative rounded-2xl bg-[#040915] border border-cyan-400/40 p-1 shadow-2xl flex items-center justify-center overflow-hidden">
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#00629B]/35 via-emerald-500/35 to-amber-500/25 blur-sm opacity-75 group-hover:opacity-100 transition duration-500" />
+          <div className="relative rounded-2xl bg-[#051124] border-2 border-[#00629B]/50 p-1 shadow-md flex items-center justify-center overflow-hidden">
             <GridVaneEmblemSVG className={`${dims} transition-transform duration-500 group-hover:scale-105`} />
           </div>
         </div>
@@ -170,19 +172,25 @@ export function GridVaneLogo({
         {/* Brand Typography & Tagline */}
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="font-display text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-100 to-emerald-300 bg-clip-text text-transparent">
+            <span
+              className={`font-display text-xl md:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent ${
+                isLightMode
+                  ? "bg-gradient-to-r from-[#0A192F] via-[#00629B] to-[#047857]"
+                  : "bg-gradient-to-r from-white via-cyan-100 to-emerald-300"
+              }`}
+            >
               GRIDVANE
             </span>
-            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              OS v2.0
+            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/35">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+              IEEE 2026
             </span>
           </div>
           <p className="text-[11px] md:text-xs text-slate-400 font-medium tracking-wide flex items-center gap-1.5">
             <span>Quantum-Safe Thermo-Carbon VPP</span>
-            <span className="text-slate-600">•</span>
-            <span className="text-cyan-400/90 font-mono text-[10px] underline decoration-cyan-500/40 underline-offset-2 group-hover:text-cyan-300">
-              Inspect Emblem
+            <span>•</span>
+            <span className="text-cyan-400 font-mono text-[10px] underline decoration-cyan-500/40 underline-offset-2">
+              Brand Emblem
             </span>
           </p>
         </div>
@@ -191,11 +199,11 @@ export function GridVaneLogo({
       {/* Interactive Brand Emblem & Symbolism Modal */}
       {showModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="relative max-w-3xl w-full rounded-3xl bg-[#070E1C] border border-cyan-500/30 p-6 md:p-8 shadow-[0_0_80px_rgba(6,182,212,0.22)]"
+            className="relative max-w-3xl w-full rounded-3xl gv-glass-card p-6 md:p-8 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -208,7 +216,7 @@ export function GridVaneLogo({
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               {/* High-Resolution Master Brand Mark */}
               <div className="md:col-span-5 flex flex-col items-center">
-                <div className="relative rounded-3xl overflow-hidden border-2 border-cyan-400/40 shadow-[0_0_50px_rgba(16,185,129,0.25)] bg-[#040814]">
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#00629B]/50 shadow-xl bg-[#040814]">
                   <img
                     src="/gridvane-logo.jpg"
                     alt="GridVane Official Emblem"
@@ -225,7 +233,7 @@ export function GridVaneLogo({
               <div className="md:col-span-7 space-y-4">
                 <div>
                   <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                    Cyber-Physical Brand Identity
+                    IEEE ClimateChain 2026 Brand Identity
                   </span>
                   <h3 className="text-2xl font-extrabold text-white mt-2 tracking-tight">
                     The GridVane Emblem Architecture
@@ -243,7 +251,7 @@ export function GridVaneLogo({
                         1. Outer Hexagonal Truss — NIST FIPS 204 Lattice Shield
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        Represents the Module-Lattice (`ML-DSA-65`) post-quantum cryptographic perimeter protecting 20-year grid infrastructure against quantum key forgery.
+                        Represents the Module-Lattice (ML-DSA-65) post-quantum cryptographic perimeter protecting 20-year grid infrastructure against quantum key forgery.
                       </p>
                     </div>
                   </div>

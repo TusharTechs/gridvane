@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GridVane | Physics-Verified, Quantum-Safe Thermo-Carbon VPP & Climate Ledger",
+  title: "GridVane | IEEE ClimateChain 2026 — Quantum-Safe Thermo-Carbon VPP & Climate Ledger",
   description:
     "IEEE ClimateChain Global Hackathon 2026: Coupling IEEE 33-Bus AC Power Flow, IEEE Std C57.91 Transformer Thermal Aging, IEEE Std 738 Dynamic Line Rating, Kirchhoff FDIA Firewall, NIST FIPS 204 ML-DSA-65 Post-Quantum Signatures, and IEEE P3271.01 Recurring DLT Settlement.",
 };
@@ -34,9 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${jakarta.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={`theme-ieee-light ${jakarta.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen bg-[#040812] font-sans text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
+      <body className="min-h-screen font-sans antialiased selection:bg-sky-500/20 selection:text-sky-900">
         {children}
       </body>
     </html>

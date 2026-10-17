@@ -43,6 +43,8 @@ import {
   Compass,
   CheckCircle2,
   MapPin,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 type CockpitTabId =
@@ -54,6 +56,20 @@ type CockpitTabId =
   | "GRIDBENCH_RUBRIC";
 
 export default function GridVaneCockpitPage() {
+  // Default to IEEE & UN COP31 Executive Daylight Studio Theme
+  const [isLightMode, setIsLightMode] = useState<boolean>(true);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    if (isLightMode) {
+      html.classList.add("theme-ieee-light");
+      html.classList.remove("dark");
+    } else {
+      html.classList.add("dark");
+      html.classList.remove("theme-ieee-light");
+    }
+  }, [isLightMode]);
+
   // Regional Feeder Twin State
   const [feederId, setFeederId] = useState<FeederPresetId>("antalya_cop31");
   const preset = FEEDER_PRESETS[feederId];
@@ -202,47 +218,74 @@ export default function GridVaneCockpitPage() {
 
   return (
     <div className="min-h-screen text-slate-100 pb-16">
-      {/* Top Glassmorphic Mission Control Navbar */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#040814]/85 border-b border-cyan-500/20 px-4 lg:px-8 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.65)]">
+      {/* Top IEEE & ClimateChain Executive Navbar */}
+      <header
+        className={`sticky top-0 z-40 backdrop-blur-xl border-b px-4 lg:px-8 py-3 transition-colors ${
+          isLightMode
+            ? "bg-white/90 border-[#CBD5E1] shadow-[0_4px_20px_rgba(0,98,155,0.06)]"
+            : "bg-[#040814]/88 border-cyan-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.65)]"
+        }`}
+      >
         <div className="max-w-[1480px] mx-auto flex flex-wrap items-center justify-between gap-4">
           {/* Custom GridVane Emblem + Wordmark + Modal Trigger */}
           <div className="flex items-center gap-5">
-            <GridVaneLogo size="md" interactiveModal={true} />
+            <GridVaneLogo size="md" interactiveModal={true} isLightMode={isLightMode} />
 
-            {/* Live Verification Badges */}
+            {/* Live IEEE Standards & COP31 Verification Badges */}
             <div className="hidden xl:flex items-center gap-2 pl-4 border-l border-slate-800">
+              <span className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/35">
+                IEEE Std C57.91 · 738 · P3271.01
+              </span>
               <span className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/35">
                 Track 2 VPP + Tracks 1 · 4 · 3
               </span>
-              <span className="px-2.5 py-1 text-[10px] font-mono font-semibold rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                solc 0.8.28 Verified
-              </span>
-              <span className="px-2.5 py-1 text-[10px] font-mono font-semibold rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                UN COP31 Antalya Twin
+              <span className="px-2.5 py-1 text-[10px] font-mono font-semibold rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/35">
+                UN COP31 Antalya
               </span>
             </div>
           </div>
 
-          {/* 4 Regional Feeder Digital Twin Switcher */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-[#050B18] p-1.5 rounded-2xl border border-slate-800/90 shadow-inner">
-            {(Object.keys(FEEDER_PRESETS) as FeederPresetId[]).map((id) => {
-              const p = FEEDER_PRESETS[id];
-              const active = feederId === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => handleSelectFeeder(id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
-                    active
-                      ? "bg-gradient-to-r from-emerald-500/25 to-cyan-500/20 text-white border border-emerald-400/50 font-bold shadow-glow-emerald"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
-                  }`}
-                >
-                  <span className="text-sm">{p.flag}</span>
-                  <span>{p.shortName}</span>
-                </button>
-              );
-            })}
+          {/* Right Controls: 4 Regional Feeder Switcher + IEEE Daylight / SCADA Dark Toggle */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-1 bg-slate-950 p-1 rounded-2xl border border-slate-800">
+              {(Object.keys(FEEDER_PRESETS) as FeederPresetId[]).map((id) => {
+                const p = FEEDER_PRESETS[id];
+                const active = feederId === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => handleSelectFeeder(id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      active
+                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/45 font-bold shadow-sm"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    <span className="text-sm">{p.flag}</span>
+                    <span>{p.shortName}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Instant Theme Switcher: IEEE Executive Daylight vs. SCADA Dark */}
+            <button
+              onClick={() => setIsLightMode((prev) => !prev)}
+              className="px-3 py-2 rounded-xl text-xs font-mono font-bold border transition-all flex items-center gap-1.5 bg-cyan-500/15 text-cyan-300 border-cyan-500/35 hover:opacity-90"
+              title="Switch between IEEE Executive Daylight Theme and SCADA Control Room Dark Mode"
+            >
+              {isLightMode ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                  <span>IEEE Daylight</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-cyan-300" />
+                  <span>SCADA Dark</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -251,22 +294,21 @@ export default function GridVaneCockpitPage() {
       <main className="max-w-[1480px] mx-auto px-4 lg:px-8 pt-5 space-y-5">
         {/* Executive Hero Deck & 6-Step Interactive Judge Guided Tour */}
         <section className="gv-glass-card rounded-3xl p-4 lg:p-6 relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#00629B] via-[#059669] to-[#D97706]" />
 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-800/80">
             <div className="flex items-start sm:items-center gap-4">
               <img
                 src="/gridvane-logo.jpg"
                 alt="GridVane Official Emblem"
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-cyan-400/40 shadow-glow-cyan shrink-0"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-[#00629B]/50 shadow-md shrink-0"
               />
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/35 flex items-center gap-1">
                     <Compass className="w-3 h-3" /> Interactive Judge Evaluation Deck
                   </span>
-                  <span className="text-xs font-mono text-cyan-300 flex items-center gap-1">
+                  <span className="text-xs font-mono text-emerald-300 font-semibold flex items-center gap-1">
                     <MapPin className="w-3 h-3" /> {preset.name} ({preset.country})
                   </span>
                 </div>
@@ -283,9 +325,9 @@ export default function GridVaneCockpitPage() {
               <button
                 onClick={handleFetchLiveWeather}
                 disabled={isFetchingWeather}
-                className="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 text-xs font-mono font-bold flex items-center gap-2 transition shadow-glow-cyan"
+                className="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold flex items-center gap-2 transition"
               >
-                <CloudSun className="w-4 h-4 text-cyan-300" />
+                <CloudSun className="w-4 h-4 text-cyan-400" />
                 {isFetchingWeather ? "Syncing Satellite..." : "Sync Live Open-Meteo"}
               </button>
             </div>
@@ -308,8 +350,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "THERMAL_C57"
-                  ? "bg-gradient-to-br from-amber-500/25 via-slate-900/90 to-slate-950 border-amber-400/60 shadow-glow-amber"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-amber-500/40"
+                  ? "bg-amber-500/15 border-amber-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-amber-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-amber-400">
@@ -334,8 +376,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "P3271_SILOS"
-                  ? "bg-gradient-to-br from-emerald-500/25 via-slate-900/90 to-slate-950 border-emerald-400/60 shadow-glow-emerald"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-emerald-500/40"
+                  ? "bg-emerald-500/15 border-emerald-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-emerald-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-emerald-400">
@@ -361,8 +403,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "KIRCHHOFF_PQC"
-                  ? "bg-gradient-to-br from-rose-500/25 via-slate-900/90 to-slate-950 border-rose-400/60 shadow-glow-rose"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-rose-500/40"
+                  ? "bg-rose-500/15 border-rose-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-rose-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-rose-400">
@@ -387,8 +429,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "DLR_SKYVISION_AGENTS"
-                  ? "bg-gradient-to-br from-cyan-500/25 via-slate-900/90 to-slate-950 border-cyan-400/60 shadow-glow-cyan"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-cyan-500/40"
+                  ? "bg-cyan-500/15 border-cyan-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-cyan-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-cyan-400">
@@ -412,8 +454,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "XAI_EQUITY"
-                  ? "bg-gradient-to-br from-sky-500/25 via-slate-900/90 to-slate-950 border-sky-400/60 shadow-glow-cyan"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-sky-500/40"
+                  ? "bg-sky-500/15 border-sky-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-sky-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-sky-400">
@@ -435,8 +477,8 @@ export default function GridVaneCockpitPage() {
               }}
               className={`group p-3 rounded-2xl border text-left transition-all relative overflow-hidden ${
                 activeTab === "GRIDBENCH_RUBRIC"
-                  ? "bg-gradient-to-br from-violet-500/25 via-slate-900/90 to-slate-950 border-violet-400/60"
-                  : "bg-[#060D1B]/90 border-slate-800/90 hover:border-violet-500/40"
+                  ? "bg-violet-500/15 border-violet-500/50 shadow-sm"
+                  : "bg-slate-950 border-slate-800 hover:border-violet-500/40"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-violet-400">
@@ -457,7 +499,7 @@ export default function GridVaneCockpitPage() {
         <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
           {/* KPI 1: LME Carbon Avoided */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#059669] to-[#10B981]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Avoided Carbon</span>
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
@@ -467,16 +509,16 @@ export default function GridVaneCockpitPage() {
               <span className="text-xs font-mono font-normal text-slate-400">kg/h</span>
             </div>
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
-              <div className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 w-[86%]" />
+              <div className="h-full bg-gradient-to-r from-[#059669] to-[#00629B] w-[86%]" />
             </div>
-            <div className="text-[11px] font-mono text-emerald-300 mt-1.5">
+            <div className="text-[11px] font-mono text-emerald-300 font-semibold mt-1.5">
               +{metricsComparison.gridvane.lmeBonusCarbonPct}% LME Nodal Bonus
             </div>
           </div>
 
           {/* KPI 2: IEEE C57.91 Transformer Hot-Spot */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#D97706] to-[#F59E0B]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Peak Trafo Θ_H</span>
               <Flame className="w-3.5 h-3.5 text-amber-400" />
@@ -489,7 +531,7 @@ export default function GridVaneCockpitPage() {
             </div>
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
               <div
-                className="h-full bg-gradient-to-r from-emerald-400 to-amber-400"
+                className="h-full bg-gradient-to-r from-[#059669] to-[#D97706]"
                 style={{
                   width: `${Math.min(
                     100,
@@ -498,14 +540,14 @@ export default function GridVaneCockpitPage() {
                 }}
               />
             </div>
-            <div className="text-[11px] font-mono text-amber-300 mt-1.5">
+            <div className="text-[11px] font-mono text-amber-300 font-semibold mt-1.5">
               -{metricsComparison.gridvane.faaReductionPct}% IEEE C57.91 Aging
             </div>
           </div>
 
           {/* KPI 3: TSRS / IFRS S2 Expected Annual Loss Saved */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-400 to-blue-500" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#00629B] to-[#0284C7]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>TSRS / IFRS S2 AAL</span>
               <Zap className="w-3.5 h-3.5 text-cyan-400" />
@@ -515,16 +557,16 @@ export default function GridVaneCockpitPage() {
               <span className="text-xs font-mono font-normal text-slate-400">/yr</span>
             </div>
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
-              <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 w-[78%]" />
+              <div className="h-full bg-gradient-to-r from-[#00629B] to-[#0284C7] w-[78%]" />
             </div>
-            <div className="text-[11px] font-mono text-slate-300 mt-1.5">
+            <div className="text-[11px] font-mono text-slate-300 font-semibold mt-1.5">
               I²R Line Loss: -{metricsComparison.gridvane.lineLossReductionPct}%
             </div>
           </div>
 
           {/* KPI 4: Kirchhoff Residual Firewall */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#E11D48] to-[#F43F5E]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Kirchhoff Gate</span>
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -536,11 +578,11 @@ export default function GridVaneCockpitPage() {
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
               <div
                 className={`h-full ${
-                  firewallReport.quarantinedCount > 0 ? "bg-rose-500 w-[97%]" : "bg-emerald-400 w-full"
+                  firewallReport.quarantinedCount > 0 ? "bg-rose-600 w-[97%]" : "bg-[#059669] w-full"
                 }`}
               />
             </div>
-            <div className="text-[11px] font-mono text-rose-300 mt-1.5 truncate">
+            <div className="text-[11px] font-mono text-rose-300 font-semibold mt-1.5 truncate">
               {firewallReport.quarantinedCount > 0
                 ? `${firewallReport.quarantinedCount} Quarantined (${firewallReport.maxResidualKW}kW)`
                 : `Max r=${firewallReport.maxResidualKW}kW (≤2.5kW)`}
@@ -549,7 +591,7 @@ export default function GridVaneCockpitPage() {
 
           {/* KPI 5: Post-Quantum ML-DSA-65 */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-400 to-purple-500" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#5B21B6] to-[#7C3AED]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>PQC Attestation</span>
               <KeyRound className="w-3.5 h-3.5 text-violet-400" />
@@ -558,16 +600,16 @@ export default function GridVaneCockpitPage() {
               ML-DSA-65
             </div>
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
-              <div className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-500 w-full" />
+              <div className="h-full bg-gradient-to-r from-[#5B21B6] to-[#7C3AED] w-full" />
             </div>
-            <div className="text-[11px] font-mono text-slate-300 mt-1.5">
+            <div className="text-[11px] font-mono text-slate-300 font-semibold mt-1.5">
               FIPS 204 (3,309B) + PP-PQB
             </div>
           </div>
 
           {/* KPI 6: Responsible AI Thermal-Equity Gate */}
           <div className="gv-glass-card rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-sky-400 to-cyan-300" />
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#0284C7] to-[#059669]" />
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Thermal Equity</span>
               <HeartPulse className="w-3.5 h-3.5 text-sky-400" />
@@ -577,9 +619,9 @@ export default function GridVaneCockpitPage() {
               <span className="text-xs font-mono font-normal text-slate-300">kW Cut</span>
             </div>
             <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2">
-              <div className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 w-full" />
+              <div className="h-full bg-gradient-to-r from-[#0284C7] to-[#059669] w-full" />
             </div>
-            <div className="text-[11px] font-mono text-emerald-400 mt-1.5">
+            <div className="text-[11px] font-mono text-emerald-400 font-semibold mt-1.5">
               1,270 Vulnerable Citizens Safe
             </div>
           </div>
@@ -594,6 +636,7 @@ export default function GridVaneCockpitPage() {
               selectedBusId={selectedBusId}
               onSelectBus={setSelectedBusId}
               nodeAudits={firewallReport.nodeAudits}
+              isLightMode={isLightMode}
             />
 
             <Diurnal24hChart
@@ -603,13 +646,14 @@ export default function GridVaneCockpitPage() {
               isPlaying={isPlaying24h}
               onTogglePlay={() => setIsPlaying24h((p) => !p)}
               onSelectHour={handleSelectHour}
+              isLightMode={isLightMode}
             />
           </div>
 
           {/* Right 4 Columns: Tactile Cyber-Physical Parameter & Red-Team Control Dock */}
           <div className="xl:col-span-4 space-y-4">
             <div className="gv-glass-card rounded-2xl p-5 relative overflow-hidden">
-              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-cyan-400 via-emerald-400 to-amber-400" />
+              <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#00629B] via-[#059669] to-[#D97706]" />
 
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                 <div className="flex items-center gap-2.5">
@@ -632,7 +676,7 @@ export default function GridVaneCockpitPage() {
 
               <div className="space-y-4">
                 {/* 1. Ambient Heatwave Slider */}
-                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-slate-300 font-mono font-semibold flex items-center gap-1.5">
                       <Flame className="w-4 h-4 text-amber-400" /> Ambient Heatwave (Θ_A)
@@ -660,12 +704,12 @@ export default function GridVaneCockpitPage() {
                   <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1.5">
                     <span>20°C Mild</span>
                     <span>35°C Summer</span>
-                    <span className="text-rose-400/90">48°C Extreme</span>
+                    <span className="text-rose-400 font-semibold">48°C Extreme</span>
                   </div>
                 </div>
 
                 {/* 2. Solar Irradiance Slider */}
-                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-slate-300 font-mono font-semibold flex items-center gap-1.5">
                       <CloudSun className="w-4 h-4 text-cyan-400" /> Solar Irradiance (G_t)
@@ -689,12 +733,12 @@ export default function GridVaneCockpitPage() {
                   <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1.5">
                     <span>0 W/m² (Night)</span>
                     <span>550 W/m²</span>
-                    <span className="text-cyan-400/90">1050 W/m² Peak</span>
+                    <span className="text-cyan-400 font-semibold">1050 W/m² Peak</span>
                   </div>
                 </div>
 
                 {/* 3. CMIP6 Climate Pathway Selector */}
-                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
                   <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2">
                     CORDEX / CMIP6 Climate Horizon
                   </label>
@@ -708,8 +752,8 @@ export default function GridVaneCockpitPage() {
                           onClick={() => setScenarioId(scKey)}
                           className={`py-2 px-2 rounded-lg border text-center transition-all ${
                             active
-                              ? "bg-amber-500/20 text-amber-200 border-amber-400/60 font-bold shadow-glow-amber"
-                              : "bg-slate-900/90 text-slate-400 border-slate-800 hover:text-slate-200"
+                              ? "bg-amber-500/20 text-amber-200 border-amber-500/50 font-bold"
+                              : "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
                           }`}
                         >
                           {sc.label.split(" ")[0]}
@@ -723,7 +767,7 @@ export default function GridVaneCockpitPage() {
                 </div>
 
                 {/* 4. VPP Dispatch Strategy Mode */}
-                <div className="p-3.5 rounded-xl bg-[#040915]/90 border border-slate-800/90">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
                   <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2">
                     Active VPP Control Regime
                   </label>
@@ -732,8 +776,8 @@ export default function GridVaneCockpitPage() {
                       onClick={() => setVppMode("UNCONTROLLED_BASELINE")}
                       className={`py-2 px-2 rounded-lg border transition-all ${
                         vppMode === "UNCONTROLLED_BASELINE"
-                          ? "bg-rose-500/20 text-rose-200 border-rose-400/60 font-bold"
-                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                          ? "bg-rose-500/20 text-rose-200 border-rose-500/50 font-bold"
+                          : "bg-slate-900 text-slate-400 border-slate-800"
                       }`}
                     >
                       Baseline
@@ -742,8 +786,8 @@ export default function GridVaneCockpitPage() {
                       onClick={() => setVppMode("NAIVE_CARBON_ONLY_VPP")}
                       className={`py-2 px-2 rounded-lg border transition-all ${
                         vppMode === "NAIVE_CARBON_ONLY_VPP"
-                          ? "bg-amber-500/20 text-amber-200 border-amber-400/60 font-bold"
-                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                          ? "bg-amber-500/20 text-amber-200 border-amber-500/50 font-bold"
+                          : "bg-slate-900 text-slate-400 border-slate-800"
                       }`}
                     >
                       Naive VPP
@@ -752,8 +796,8 @@ export default function GridVaneCockpitPage() {
                       onClick={() => setVppMode("GRIDVANE_THERMO_CARBON_VPP")}
                       className={`py-2 px-2 rounded-lg border transition-all ${
                         vppMode === "GRIDVANE_THERMO_CARBON_VPP"
-                          ? "bg-emerald-500/25 text-emerald-200 border-emerald-400/60 font-bold shadow-glow-emerald"
-                          : "bg-slate-900/90 text-slate-400 border-slate-800"
+                          ? "bg-emerald-500/20 text-emerald-200 border-emerald-500/50 font-bold"
+                          : "bg-slate-900 text-slate-400 border-slate-800"
                       }`}
                     >
                       GridVane
@@ -776,8 +820,8 @@ export default function GridVaneCockpitPage() {
                   }}
                   className={`w-full py-2.5 px-4 rounded-xl text-xs font-mono font-bold border flex items-center justify-center gap-2 transition-all ${
                     attackType !== "NONE"
-                      ? "bg-rose-500/25 text-rose-200 border-rose-400/60 shadow-glow-rose"
-                      : "bg-[#060E1F] hover:bg-rose-950/40 text-slate-200 border-rose-500/30 hover:border-rose-400/50"
+                      ? "bg-rose-500/20 text-rose-300 border-rose-500/50"
+                      : "bg-slate-950 hover:bg-rose-500/15 text-slate-200 border-rose-500/35"
                   }`}
                 >
                   <ShieldAlert className="w-4 h-4 text-rose-400" />
@@ -840,8 +884,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("THERMAL_C57")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "THERMAL_C57"
-                ? "bg-gradient-to-r from-amber-500/25 to-orange-500/15 text-amber-200 border border-amber-400/50 shadow-glow-amber"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-amber-500/20 text-amber-300 border border-amber-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <Flame className="w-4 h-4 text-amber-400" />
@@ -852,8 +896,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("DLR_SKYVISION_AGENTS")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "DLR_SKYVISION_AGENTS"
-                ? "bg-gradient-to-r from-cyan-500/25 to-blue-500/15 text-cyan-200 border border-cyan-400/50 shadow-glow-cyan"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <Wind className="w-4 h-4 text-cyan-400" />
@@ -864,8 +908,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("KIRCHHOFF_PQC")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "KIRCHHOFF_PQC"
-                ? "bg-gradient-to-r from-rose-500/25 to-pink-500/15 text-rose-200 border border-rose-400/50 shadow-glow-rose"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-rose-500/20 text-rose-300 border border-rose-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <ShieldAlert className="w-4 h-4 text-rose-400" />
@@ -876,8 +920,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("XAI_EQUITY")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "XAI_EQUITY"
-                ? "bg-gradient-to-r from-sky-500/25 to-cyan-500/15 text-sky-200 border border-sky-400/50 shadow-glow-cyan"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-sky-500/20 text-sky-300 border border-sky-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <BrainCircuit className="w-4 h-4 text-sky-400" />
@@ -888,8 +932,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("P3271_SILOS")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "P3271_SILOS"
-                ? "bg-gradient-to-r from-emerald-500/25 to-teal-500/15 text-emerald-200 border border-emerald-400/50 shadow-glow-emerald"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <Link2 className="w-4 h-4 text-emerald-400" />
@@ -900,8 +944,8 @@ export default function GridVaneCockpitPage() {
             onClick={() => setActiveTab("GRIDBENCH_RUBRIC")}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
               activeTab === "GRIDBENCH_RUBRIC"
-                ? "bg-gradient-to-r from-violet-500/25 to-purple-500/15 text-violet-200 border border-violet-400/50"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
+                ? "bg-violet-500/20 text-violet-300 border border-violet-500/45"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             <BarChart3 className="w-4 h-4 text-violet-400" />
